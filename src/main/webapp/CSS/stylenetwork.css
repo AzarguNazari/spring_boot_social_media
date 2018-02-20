@@ -1,0 +1,41 @@
+@charset "ISO-8859-1";
+
+#wrapper {
+	padding: 15px;
+  	width: 900px;
+	background-color: beige;
+	font-family: Helvetica;
+}
+
+#logoutForm{
+	float: right;
+	border-radius: 3px;
+}
+#search-forms-div{
+	
+}
+.search-forms{
+	display: inline-flex;
+}
+table {
+	border-radius: 3px;
+}
+.invited_text{
+	display: inline-block;
+}
+#logoutButton{
+	border-radius: 3px;
+	box-shadow: 1px 1px;
+}
+#network{
+	float: right;
+}
+.tables{
+	display: inline-block;
+}
+#pending_invitations{
+	float: right;
+}
+.form-inline{
+	margin-left: 50px;
+}
