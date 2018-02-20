@@ -1,5 +1,7 @@
 package com.samuel.javatwo.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.samuel.javatwo.models.Status;
@@ -32,5 +34,7 @@ public class StatusService {
 		// TODO Auto-generated method stub
 		statusRepository.delete(status_to_delete);
 	}
-
+    public List<Status> findWallStatuses(Long user_wall_id) {
+    	return statusRepository.findWallStatuses(user_wall_id);
+    }
 }

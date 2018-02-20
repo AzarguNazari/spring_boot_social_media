@@ -106,11 +106,11 @@
 	
 		    </div>
 			<div id="the_wall">		    	
-		    	<div id="status-list">
+		    	<div id="status-box">
 			    	<div id="whats-on-your-mind">
 						<c:choose>
 							<c:when test = "${user_to_render.id == currentUser.id}">
-								<form:form action="/status" method="POST" modelAttribute="status">
+								<form:form action="/status/${user_to_render.id}" method="POST" modelAttribute="status">
 									<fieldset class="form-group">
 										<form:input placeholder="What's on your mind" type="text" class="form-control" id="status" name="status" path="status_body"/>
 									</fieldset>
@@ -118,20 +118,26 @@
 								</form:form>
 							</c:when>
 							<c:otherwise>
+								<form:form action="/status/${user_to_render.id}" method="POST" modelAttribute="status">
+									<fieldset class="form-group">
+										<form:input placeholder="Comment on wall" type="text" class="form-control" id="status" name="status" path="status_body"/>
+									</fieldset>
+									<button type="submit" class="btn btn-primary">Submit</button>
+								</form:form>
 							</c:otherwise>
 						</c:choose>
 			    	</div>
-		    		<c:forEach items="${user_statuses}" var="status">
+					<div id="status-list">
+		    		<c:forEach items="${wall_statuses}" var="status">
 						<blockquote class="blockquote">
-							<p><c:out value="${status.status_body}"/></p>
-							
+							<p><c:out value="${status.getPoster().name}"/> said: <c:out value="${status.status_body}"/></p>
 						</blockquote>
 						<c:choose>
 							<c:when test = "${user_to_render.id == currentUser.id}">
 				    			<form method="post" action="/delete/status/${status.id }" class="inline">
 				    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 								  <button type="submit" name="submit_param" value="submit_value" class="link-button">
-								    Delete Status
+								    Delete
 								  </button>
 								</form>
 							</c:when>
@@ -174,6 +180,7 @@
 						</div>
 						<hr>
 		    		</c:forEach>
+					</div>
 		    	</div>
 			</div>
 		</div>

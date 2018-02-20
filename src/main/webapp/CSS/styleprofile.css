@@ -56,13 +56,13 @@ table {
 #message_area{
 		margin: 15px 0 15px 0;
 }
-#status-list{
-    width: 455px;
-}
 #message_area h4{
 	display: inline-block;
 	padding: 18px;
 	margin: 4px 0 4px 0;
+}
+#status-list{
+	padding: 15px;
 }
 #message_body{
 	border: 1px solid black;
@@ -93,9 +93,7 @@ table {
 .link-button:active {
   color:red;
 }
-#status-list{
-	display: inline-block;
-}
+
 .status-reply{
 	text-align: right;
 }

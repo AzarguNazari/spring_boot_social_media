@@ -92,39 +92,19 @@ public class MainController {
 		}
 		
 	}
+	//I believe this route must be gone through first becuase of Java security
     @RequestMapping(value = {"/", "/home"})
     public String home(Principal principal, Model model, @Valid @ModelAttribute("status") Status status, @ModelAttribute("message") Message message, @Valid @ModelAttribute("statusReply") StatusReply statusReply, @Valid @ModelAttribute("message_reply") MessageReply messageReply) {
         // 1
+    	
         String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
+        Long logged_user_id = loggedUser.getId();
         System.out.println("ID of person logged in is: " + loggedUser.getId());
         System.out.println("Logged in User object is: " + loggedUser);
-        List<User> inviting_users = loggedUser.getInvitedUserFriends();
-        model.addAttribute("users", inviting_users);
-        //
-        List<User> list = new ArrayList<>();
-        for(User u : loggedUser.getUserFriends()) {
-            
-            list.add(u);
-        }
-        for(User u : loggedUser.getFriends()) {
-            
-            list.add(u);
-        }
-        List<User> invited_me = loggedUser.getInvitedUserFriends();
-        System.out.println("The list is: " + list);
-        System.out.println("amount of people who invited me: " + invited_me);
-        //Bringing these into the JSP
-        model.addAttribute("them", list);
-        model.addAttribute("invited_me", invited_me);
-        //in this route we render logged user
-        model.addAttribute("currentUser", loggedUser);
-        model.addAttribute("user_to_render", loggedUser);
-        model.addAttribute("user_statuses", loggedUser.getStatuses());
-    	model.addAttribute("wall_messages", mService.findWallMessages(loggedUser.getId()));
-    	//Getting message replies
-
-        return "profile.jsp";
+        //Long to string
+        String string_logged_user_id = logged_user_id.toString();
+        return "redirect:/users/".concat(string_logged_user_id);
     }
     
     //A selected User's Profile
@@ -159,6 +139,8 @@ public class MainController {
         model.addAttribute("them", list);
         model.addAttribute("invited_me", invited_me);
         model.addAttribute("user_statuses", selected_user_object.getStatuses());
+        model.addAttribute("wall_statuses", sService.findWallStatuses(selected_user_object.getId()));
+
     	model.addAttribute("wall_messages", mService.findWallMessages(selected_user_object.getId()));
     	
         return "profile.jsp";
@@ -357,8 +339,9 @@ public class MainController {
     	uService.save(loggedUser);
     	return "redirect:/users";
     }
-    @PostMapping("/status")
-    public String statusPostRoute(@Valid @ModelAttribute("status") Status status, BindingResult result,  RedirectAttributes redirectAttribute, Principal principal) {
+    // URI paramters to set the wall ID of the status
+    @PostMapping("/status/{user_to_render_id}")
+    public String statusPostRoute(@PathVariable("user_to_render_id") Long user_to_render_id, @Valid @ModelAttribute("status") Status status, BindingResult result,  RedirectAttributes redirectAttribute, Principal principal) {
 		if(result.hasErrors()) {
 			System.out.println("DID NOT PASS STATUS VALIDATIONS: Status must be more than 2 characters");
 			return "redirect:/";
@@ -368,17 +351,21 @@ public class MainController {
 	        Long current_user_id = loggedUser.getId();
 			System.out.println("Passed status validations");
 	    	System.out.println("Trying to save status and logged user is: : " + loggedUser);
+	    	
+	    	//Getting and setting
 	    	List<Status> user_statuses = loggedUser.getStatuses();
 	    	status.setPoster(loggedUser);
+	    	status.setWall_id(user_to_render_id);
 	    	user_statuses.add(status);
 	    	System.out.println("The statuse_body: " + status.getStatus_body());
-
 	    	System.out.println("The statuses this user has is: " + user_statuses);
 	    	loggedUser.setStatuses(user_statuses);
+	    	////
 	    	System.out.println("After setting statuses for loggedUser the loggedUser.getStatuses() is: " + loggedUser.getStatuses());
 	    	sService.saveTheStatus(status);
-	    	
-	    	return "redirect:/";
+	    	//changing to string to work in URI
+	    	String string_user_to_render_id = user_to_render_id.toString();
+	    	return "redirect:/users/".concat(string_user_to_render_id);
 
 		}
 		
