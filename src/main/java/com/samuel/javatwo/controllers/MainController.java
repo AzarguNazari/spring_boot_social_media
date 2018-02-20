@@ -96,7 +96,7 @@ public class MainController {
     @RequestMapping(value = {"/", "/home"})
     public String home(Principal principal, Model model, @Valid @ModelAttribute("status") Status status, @ModelAttribute("message") Message message, @Valid @ModelAttribute("statusReply") StatusReply statusReply, @Valid @ModelAttribute("message_reply") MessageReply messageReply) {
         // 1
-    	
+    	//this route is prmarily to redirect to our main route
         String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
         Long logged_user_id = loggedUser.getId();
