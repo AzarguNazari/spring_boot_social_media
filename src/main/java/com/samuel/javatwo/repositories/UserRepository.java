@@ -26,5 +26,8 @@ public interface UserRepository extends CrudRepository<User, Long>{
 	List<User> findByStateContaining(String string);
 	
 	List<User> findByCityContaining(String city);
+	
+	@Query(value = "SELECT email FROM users", nativeQuery=true)
+	List<String> findAllEmails();
 
 }

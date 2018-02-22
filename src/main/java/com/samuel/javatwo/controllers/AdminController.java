@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.samuel.javatwo.models.Status;
+import com.samuel.javatwo.models.StatusReply;
 import com.samuel.javatwo.models.User;
+import com.samuel.javatwo.services.StatusReplyService;
 import com.samuel.javatwo.services.StatusService;
 import com.samuel.javatwo.services.UserService;
 import com.samuel.javatwo.validators.UserValidator;
@@ -21,11 +24,14 @@ public class AdminController {
 	private final UserValidator uValidator;
 	private final UserService uService;
 	private final StatusService sService;
+	private final StatusReplyService statusReplyService;
+
 	
-	public AdminController(UserValidator uValidator, UserService uService, StatusService sService) {
+	public AdminController(UserValidator uValidator, UserService uService, StatusService sService,StatusReplyService statusReplyService) {
 		this.uValidator = uValidator;
 		this.uService = uService;
 		this.sService = sService;
+		this.statusReplyService = statusReplyService;
 	}
 	
     @RequestMapping("/home")
@@ -42,11 +48,18 @@ public class AdminController {
     	return "admin.jsp";
     }
     @PostMapping("/deleteuser/{user_id}")
-    public String adminDeleteUser(@PathVariable("user_id") Long id, Model model) {
+    public String adminDeleteUser(@PathVariable("user_id") Long selected_user_id, Model model) {
     	//finding user to delete
-    	User user_to_delete = uService.findOne(id);
+    	
+    	//THIS IS A WHOLE NEW CAN OF WORMS
+    	
+    	//THIS WILL ONLY WORK FOR USERS THAT HAVE NOTHING POSTED, OTHERWISE, POSTINGS/REPLIES WILL TRY TO RENDER BASED OFF DELETED(NULL) VALUES.
+    	
+    	//TO FIX THIS I WOULD HAVE TO DELETE EVERY REPLY, THEN EVERY STATUS, THEN THE USER.
+    	User user_to_delete = uService.findOne(selected_user_id);
+    	//ONCE AGAIN, THIS DELETE FUNCTION ONLY WORKS FOR USERS WHO HAVE POSTED NOTHING.
     	uService.deleteUser(user_to_delete);
-    	return "redirect/admin/home";
+    	return "redirect:/admin/home";
     }
     @PostMapping("/searchUserById")
     public String adminSearchById(@RequestParam("id") Long user_id, Model model) {

@@ -17,3 +17,6 @@ h1{
 #header_text{
 	text-align: center;
 }
+.email-duplicate-flash{
+	color: red;
+}

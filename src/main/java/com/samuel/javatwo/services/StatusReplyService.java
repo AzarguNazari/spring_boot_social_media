@@ -1,5 +1,7 @@
 package com.samuel.javatwo.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.samuel.javatwo.models.StatusReply;
@@ -21,5 +23,10 @@ public class StatusReplyService {
 	public void delete(Long status_reply_id) {
 		// TODO Auto-generated method stub
 		statusReplyRepository.delete(status_reply_id);
+	}
+
+	public void removeStatusReplies(Long status_id) {
+		// TODO Auto-generated method stub
+		statusReplyRepository.removeStatusReplies(status_id);
 	}
 }

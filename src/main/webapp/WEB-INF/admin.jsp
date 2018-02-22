@@ -39,7 +39,7 @@
 					<th>User ID</th>
 					<th>Name</th>
 					<th>Location</th>
-					<th>Number of Statuses Posted</th>
+					<th>Number of Wall Posts (not including replies)</th>
 					<th>Created At</th>
 					<th>Action</th>
 				</tr>

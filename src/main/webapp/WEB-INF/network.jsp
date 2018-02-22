@@ -23,22 +23,20 @@
 	  <ul class="navbar-nav">
 	
 	    <li class="nav-item">
-	      <a class="nav-link" href="/users">Add Users</a>
+			<a class="nav-link" href="/users">Add Users</a>
 	    </li>
-	    <li class="search-bar">
-			<form action="/search" method="POST" id="search-users-form">
-				<input id="searchText" type="text" placeholder="Search By Name" name="name" />
-				<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-				<input class="button" type="submit" value="Search By Name"/>
-			</form>
-	    </li>
+		<form action="/search" method="POST" class="form-inline" role="search">
+			<input placeholder="Search users" type="text" class="form-control" name="name">
+			<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+			<button type="submit" class="btn btn-secondary">Search</button>
+		</form>
 	    <li class="nav-item">
-	      <a class="nav-link" href="/">My Profile</a>
+	      <a class="nav-link" href="/"><c:out value="${currentUser.name}" />'s Profile</a>
 	    </li>
 	    <li>
 			<form id="logoutForm" method="POST" action="/logout">
 		        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-		        <input id="logoutButton" class="button" type="submit" value="Logout!" />
+		        <input class="btn btn-secondary" type="submit" value="Logout" />
 		    </form>
 	    </li>
 	  </ul>
@@ -59,12 +57,10 @@
 			<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
 			<button type="submit" class="btn btn-secondary">Search By City</button>
 		</form>
-		<!-- Search -->
-			<c:if test="${message != null}">
-		    	<p class="success"> <c:out value="${message}"/> </p>
-		    </c:if>
+
 		<form action="/searchByState" method="POST" class="form-inline" role="search">
 			<select name="state">
+					<option value="">Select a state...</option>
 					<option value="AL">Alabama</option>
 					<option value="AK">Alaska</option>
 					<option value="AZ">Arizona</option>
@@ -187,9 +183,6 @@
 				<input class="button" type="submit" value="Search By Name"/>
 			</form>
 			<br>
-			<c:if test="${message != null}">
-		    	<p class="success"> <c:out value="${message}"/> </p>
-		    </c:if>
 		   	<form action="/searchByState" method="POST" class="search-forms">
 		   	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		   	

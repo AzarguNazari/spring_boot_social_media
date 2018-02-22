@@ -50,6 +50,7 @@
 	    <c:if test="${regSuc != null}">
 	    	<p class="success"> <c:out value="${regSuc}"/> </p>
 	    </c:if>
+	    
 	    <p><form:errors path="user.*"/></p>
 
 	    <form:form method="POST" action="/registration" modelAttribute="user">
@@ -60,9 +61,13 @@
 				</div>
 			</div>
 	       	<div class="form-group row">
+
 				<form:label path="email" class="col-xs-3 col-form-label mr-2">Email</form:label>
 				<div class="col-xs-9">
 					<form:input class="form-control" id="email" name="email" path="email"/>
+				    <c:if test="${emailDuplicateError != null}">
+				    	<p class="email-duplicate-flash"> <c:out value="${emailDuplicateError}"/> </p>
+				    </c:if>
 				</div>
 			</div>
 			<div class="form-group row">
@@ -156,141 +161,6 @@
 			</div>
 	    </form:form>
 		</div>
-	</div>
-	<div class="container">
-
-	</div>
-	
-	
-<%-- DO NOT CHANGE ANYTHING BELOW THIS LINE --%>
-
-
-
-
-	<hr>
-	<div class="container-fluid">
-		<h1 id="header_text">Professional Network</h1>
-		<div id="login">
-		    <c:if test="${logoutMessage != null}">
-	       		<p><c:out value="${logoutMessage}" /></p>
-		    </c:if>
-		    <h1>Login</h1>
-		    <c:if test="${errorMessage != null}">
-		        <p><c:out value="${errorMessage}" /></p>
-		    </c:if>
-		    <form method="POST" action="/login">
-		        <p>
-		            <label for="email">Email</label>
-		            <input type="text" id="email" name="email"/>
-		        </p>
-		        <p>
-		            <label for="password">Password</label>
-		            <input type="password" id="password" name="password"/>
-		        </p>
-		        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-		        <input type="submit" value="Login"/>
-		    </form>
-		</div>
-		<div id="register">
-	    <h1>Register!</h1>
-	    <c:if test="${regSuc != null}">
-	    	<p class="success"> <c:out value="${regSuc}"/> </p>
-	    </c:if>
-	    <p><form:errors path="user.*"/></p>
-	    
-	    <form:form method="POST" action="/registration" modelAttribute="user">
-	
-	        <p>
-	            <form:label path="name">Name:</form:label>
-	            <form:input path="name"/>
-	        </p>
-	        <p>
-	            <form:label path="email" name="user_email">Email:</form:label>
-	            <form:input path="email" name="user_email"/>
-	        </p>
-	        <p>
-	            <form:label path="password">Password:</form:label>
-	            <form:password path="password"/>
-	        </p>
-	        <p>
-	            <form:label path="passwordConfirmation">Password Confirmation:</form:label>
-	            <form:password path="passwordConfirmation"/>
-	        </p>
-	        <p>
-	            <form:label path="state">State:</form:label>
-				<form:select path="state">
-					<option value="">Select a state...</option>
-					<option value="AL">Alabama</option>
-					<option value="AK">Alaska</option>
-					<option value="AZ">Arizona</option>
-					<option value="AR">Arkansas</option>
-					<option value="CA">California</option>
-					<option value="CO">Colorado</option>
-					<option value="CT">Connecticut</option>
-					<option value="DE">Delaware</option>
-					<option value="DC">District Of Columbia</option>
-					<option value="FL">Florida</option>
-					<option value="GA">Georgia</option>
-					<option value="HI">Hawaii</option>
-					<option value="ID">Idaho</option>
-					<option value="IL">Illinois</option>
-					<option value="IN">Indiana</option>
-					<option value="IA">Iowa</option>
-					<option value="KS">Kansas</option>
-					<option value="KY">Kentucky</option>
-					<option value="LA">Louisiana</option>
-					<option value="ME">Maine</option>
-					<option value="MD">Maryland</option>
-					<option value="MA">Massachusetts</option>
-					<option value="MI">Michigan</option>
-					<option value="MN">Minnesota</option>
-					<option value="MS">Mississippi</option>
-					<option value="MO">Missouri</option>
-					<option value="MT">Montana</option>
-					<option value="NE">Nebraska</option>
-					<option value="NV">Nevada</option>
-					<option value="NH">New Hampshire</option>
-					<option value="NJ">New Jersey</option>
-					<option value="NM">New Mexico</option>
-					<option value="NY">New York</option>
-					<option value="NC">North Carolina</option>
-					<option value="ND">North Dakota</option>
-					<option value="OH">Ohio</option>
-					<option value="OK">Oklahoma</option>
-					<option value="OR">Oregon</option>
-					<option value="PA">Pennsylvania</option>
-					<option value="RI">Rhode Island</option>
-					<option value="SC">South Carolina</option>
-					<option value="SD">South Dakota</option>
-					<option value="TN">Tennessee</option>
-					<option value="TX">Texas</option>
-					<option value="UT">Utah</option>
-					<option value="VT">Vermont</option>
-					<option value="VA">Virginia</option>
-					<option value="WA">Washington</option>
-					<option value="WV">West Virginia</option>
-					<option value="WI">Wisconsin</option>
-					<option value="WY">Wyoming</option>
-				</form:select>
-	        </p>
-	       	<p>
-	            <form:label path="city">City: </form:label>
-	            <form:input path="city"/>
-	        </p>
-	        <p>
-	            <form:label path="description">About me:</form:label>
-	            <form:textarea name="description" path="description" rows="2" cols="40"></form:textarea>
-	        </p>
-	        <p>
-	        	<form method="post" enctype="multipart/form-data" action="/images">
-	        		<input type="file" name="file"/>
-	        		<input type="submit" value="Upload image">
-	        	</form>
-	        </p>
-	        
-	        <input type="submit" value="Register"/>
-	    </form:form>
-	    </div>
 	</div>
 </body>
 </html>

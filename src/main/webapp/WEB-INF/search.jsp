@@ -14,35 +14,35 @@
 <title>Searched Users</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-  <!-- Brand -->
-  <a class="navbar-brand" href="#">Sam Lobodiak's Social Network App</a>
-
-  <!-- Links -->
-  <ul class="navbar-nav">
-
-    <li class="nav-item">
-      <a class="nav-link" href="/users">Add Users</a>
-    </li>
-
-    <li class="search-bar">
-		<form action="/search" method="POST" id="search-users-form">
-			<input id="searchText" type="text" placeholder="Search By Name" name="name" />
+	<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+	  <!-- Brand -->
+	  <a class="navbar-brand" href="#">Sam Lobodiak's Social Network App</a>
+	
+	  <!-- Links -->
+	  <ul class="navbar-nav">
+	
+	    <li class="nav-item">
+	      <a class="nav-link" href="/users">Add Users</a>
+	    </li>
+	
+	    <li class="search-bar">
+		<form action="/search" method="POST" class="form-inline" role="search">
+			<input placeholder="Search users" type="text" class="form-control" name="name">
 			<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-			<input class="button" type="submit" value="Search By Name"/>
+			<button type="submit" class="btn btn-secondary">Search</button>
 		</form>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/">My Profile</a>
-    </li>
-    <li>
-		<form id="logoutForm" method="POST" action="/logout">
-	        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-	        <input id="logoutButton" type="submit" value="Logout!" />
-	    </form>
-    </li>
-  </ul>
-</nav>
+	    </li>
+	    <li class="nav-item">
+	      <a class="nav-link" href="/"><c:out value="${currentUser.name}" />'s Profile</a>
+	    </li>
+	    <li>
+			<form id="logoutForm" method="POST" action="/logout">
+		        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+		        <input class="btn btn-secondary" type="submit" value="Logout" />
+		    </form>
+	    </li>
+	  </ul>
+	</nav>
 	<nav class="navbar navbar-expand-sm navbar-light bg-faded">
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-content" aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>

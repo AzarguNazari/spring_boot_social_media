@@ -22,7 +22,7 @@ public class StatusReply {
 	
 	@Id
 	@GeneratedValue
-	private long id;
+	public long id;
 	
 	@Size(min=2, message="Status reply must be more than 2 characters.")
 	private String statusReplyBody;

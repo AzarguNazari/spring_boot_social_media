@@ -101,6 +101,11 @@ public class UserService {
 		// TODO Auto-generated method stub
 		userRepository.delete(user_to_delete);
 	}
+	//To find all emails to do an if .contains to prevent duplicate emails.
+	public List<String> findAllEmails() {
+		// TODO Auto-generated method stub
+		return userRepository.findAllEmails();
+	}
 
 
 }

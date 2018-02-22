@@ -18,11 +18,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.samuel.javatwo.models.Message;
 import com.samuel.javatwo.models.MessageReply;
+import com.samuel.javatwo.models.Role;
 import com.samuel.javatwo.models.Status;
 import com.samuel.javatwo.models.StatusReply;
 import com.samuel.javatwo.models.User;
 import com.samuel.javatwo.services.MessageReplyService;
 import com.samuel.javatwo.services.MessageService;
+import com.samuel.javatwo.services.RoleService;
 import com.samuel.javatwo.services.StatusReplyService;
 import com.samuel.javatwo.services.StatusService;
 import com.samuel.javatwo.services.UserService;
@@ -36,15 +38,17 @@ public class MainController {
 	private final MessageService mService;
 	private final MessageReplyService messageReplyService;
 	private final StatusReplyService statusReplyService;
+	private final RoleService roleService;
 
 	
-	public MainController(UserValidator uValidator, UserService uService, StatusService sService, MessageService mService, MessageReplyService messageReplyService,StatusReplyService statusReplyService) {
+	public MainController(UserValidator uValidator, UserService uService, StatusService sService, MessageService mService, MessageReplyService messageReplyService,StatusReplyService statusReplyService, RoleService roleService) {
 		this.uValidator = uValidator;
 		this.uService = uService;
 		this.sService = sService;
 		this.mService = mService;
 		this.messageReplyService = messageReplyService;
 		this.statusReplyService = statusReplyService;
+		this.roleService = roleService;
 	}
 	
 	@RequestMapping("/login")
@@ -62,26 +66,32 @@ public class MainController {
 	}
 	
 	@PostMapping("/registration")
-	public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result,  RedirectAttributes redirectAttribute) {
+	public String registerUser(@RequestParam("email") String user_email_input, @Valid @ModelAttribute("user") User user, BindingResult result,  RedirectAttributes redirectAttribute) {
 		uValidator.validate(user, result);
-		
+		//Grabbing all emails to compare a .contains().
+		List<String> all_user_emails = uService.findAllEmails();
+		System.out.println(user_email_input);
+		///Checking to see if duplicate email exists and throwing error otherwise (there may be a better way to do it but i'm making this work right now)
+		if(all_user_emails.contains(user_email_input)) {
+			System.out.println("That email is a duplicate");
+			redirectAttribute.addFlashAttribute("emailDuplicateError", "That email already exists");
+			return "redirect:/login";
+		};
 		if(result.hasErrors()) {
 			System.out.println("DID NOT PASS VALIDATIONS");
 			return "loginreg.jsp";
 		} else {
-			
+			//To make first created User (me) an Admin
 			System.out.println("PASSED VALIDATIONS ");
 			if(uService.findAll().size() == 0) {
-				System.out.println("Saved AS AN ADMIN ROLE");
-
 				uService.saveUserWithAdminRole(user);
+				System.out.println("Saved AS AN ADMIN ROLE");
 			} else {
 				
 				System.out.println("Trying to SAVE as USER ROLE");
 				redirectAttribute.addFlashAttribute("regSuc", "Thank you for registering, please log into to continue");
-				uService.saveUserWithAdminRole(user);
+				uService.saveWithUserRole(user);
 			}
-			//which user do we save to the user?
 			
 			
 			System.out.println("Saved USER");
@@ -133,6 +143,18 @@ public class MainController {
         List<User> invited_me = selected_user_object.getInvitedUserFriends();
         System.out.println("The list is: " + list);
         System.out.println("amount of people who invited me: " + invited_me);
+        System.out.println("Roles for this USER are: " + loggedUser.getRoles());
+        
+        //Test Area  (The 2 is reffering to the role id of 2 which is ADMIN
+        Long ADMIN_ROLE_ID = (long) 2;
+        Role ADMIN_ROLE_OBJECT = roleService.findOne(ADMIN_ROLE_ID);
+        if(loggedUser.getRoles().contains(ADMIN_ROLE_OBJECT)) {
+        	System.out.println("--TEST WORKED----------------------------------");
+        }else {
+        	System.out.println("PRINT TEST DID NOT WORK------------------------------------");
+
+        }
+        //
         //for using profile template but distinguishing currentUser from selected_user
         model.addAttribute("user_to_render", selected_user_object);
         model.addAttribute("currentUser", loggedUser);
@@ -140,6 +162,7 @@ public class MainController {
         model.addAttribute("invited_me", invited_me);
         model.addAttribute("user_statuses", selected_user_object.getStatuses());
         model.addAttribute("wall_statuses", sService.findWallStatuses(selected_user_object.getId()));
+        model.addAttribute("ADMIN_ROLE_OBJECT", ADMIN_ROLE_OBJECT);
 
     	model.addAttribute("wall_messages", mService.findWallMessages(selected_user_object.getId()));
     	
@@ -148,7 +171,9 @@ public class MainController {
     
     @PostMapping("/search")
     public String searchUser(@RequestParam("name") String name) {
-
+    	if(name == "") {
+    		return "redirect:/users";
+    	}
     	return "redirect:/search/".concat(name);
     }
     @RequestMapping("/search/{name}")
@@ -176,7 +201,9 @@ public class MainController {
     }
     @PostMapping("/searchByState")
     public String search(@RequestParam("state") String state) {
-
+    	if(state == "") {
+    		return "redirect:/users";
+    	}
     	return"redirect:/searchByState/".concat(state);
     }
     @RequestMapping("/searchByState/{state}")
@@ -202,7 +229,10 @@ public class MainController {
     }
     @PostMapping("/searchByCity")
     public String searchByCityPostRoute(@RequestParam("city") String city) {
-
+    	//If user inputs nothing into search box
+    	if(city == "") {
+    		return "redirect:/users";
+    	}
     	return"redirect:/searchByCity/".concat(city);
     }
     @RequestMapping("/searchByCity/{city}")
@@ -339,7 +369,49 @@ public class MainController {
     	uService.save(loggedUser);
     	return "redirect:/users";
     }
-    // URI paramters to set the wall ID of the status
+    // I may be able to consolidate this route into the other invite route
+    @RequestMapping("/profile/invite/{person_to_connect_id}")
+    public String profileInviteUser(@PathVariable("person_to_connect_id") Long id, Principal principal){
+    	System.out.println("In /INVITE route");
+    	String email = principal.getName();
+        User loggedUser = uService.findByEmail(email);
+    	System.out.println("Inside INVITE route and LOGGED USER IS: " + loggedUser);
+    	User connect_to_person = uService.findOne(id);
+    	System.out.println("The person " + loggedUser.getName() + " is trying to connect with is " + uService.findOne(id).getName());
+    	System.out.println("The logged friends amount is: " + loggedUser.getUserFriends().size());
+    	
+    	if(loggedUser.getInvitedFriends().size() == 0) {
+    		List<User> list = new ArrayList<>();
+        	list.add(connect_to_person);
+        	loggedUser.setInvitedFriends(list);
+    	} else {
+    		List<User> list = loggedUser.getInvitedFriends();
+    		list.add(connect_to_person);
+    		loggedUser.setInvitedFriends(list);
+    	}
+
+    	uService.save(loggedUser);
+    	//Stringifying to mkae it work in URI
+    	String string_person_to_connect_id = id.toString();
+    	return "redirect:/users/".concat(string_person_to_connect_id);
+    }
+    @RequestMapping("/profile/cancelinvite/{user_id}")
+    public String profileCancelInvite(@PathVariable("user_id") Long id, Principal principal) {
+    	//This is essentially the INVERSE of the delete invite route
+    	String current_user_email = principal.getName();
+        User loggedUser = uService.findByEmail(current_user_email);
+    	User person_i_want_to_cancel_invite = uService.findOne(id);
+
+    	List<User> i_invited = loggedUser.getInvitedFriends();
+    	
+    	i_invited.remove(person_i_want_to_cancel_invite);
+    	loggedUser.setInvitedFriends(i_invited);
+    	uService.save(loggedUser);
+    	//Stringifying so it works in URI
+    	String string_person_to_connect_id = id.toString();
+    	return "redirect:/users/".concat(string_person_to_connect_id);
+    }
+    // URI parameters to set the wall ID of the status
     @PostMapping("/status/{user_to_render_id}")
     public String statusPostRoute(@PathVariable("user_to_render_id") Long user_to_render_id, @Valid @ModelAttribute("status") Status status, BindingResult result,  RedirectAttributes redirectAttribute, Principal principal) {
 		if(result.hasErrors()) {
@@ -370,22 +442,41 @@ public class MainController {
 		}
 		
     }
-    @PostMapping("/delete/status/{status_id}")
-    public String deleteStatus(@PathVariable("status_id") Long status_to_delete_id) {
+    @PostMapping("/delete/status/{status_id}/{user_to_render_id}")
+    public String deleteStatus(@PathVariable("status_id") Long status_to_delete_id, @PathVariable("user_to_render_id") Long user_to_render_id) {
+    	//First i will have to delete the replies, IF they exist.
+		System.out.println("Inside of status delete route");
+
     	Status status_to_delete = sService.findOne(status_to_delete_id);
+    	List<StatusReply> this_status_replies = status_to_delete.getRepliedStatusMessages();
+    	
+    	//if there are any replies, we will delete them before deleting the status
+    	if(this_status_replies.size() > 0) {
+        	//Iterating through and deleting the reply's
+        	for(StatusReply this_status_reply : this_status_replies) {
+        		System.out.println("This status reply ID is: " + this_status_reply.id);
+            	statusReplyService.delete(this_status_reply.id);
+        	}
+    	}
     	sService.remove(status_to_delete);
-    	return "redirect:/";
+    	//Stringifying to work in the URI
+    	String string_user_to_render_id = user_to_render_id.toString();
+    	return "redirect:/users/".concat(string_user_to_render_id);
     }
-    @PostMapping("/edit/status/{status_id}")
-    public String editStatus(@PathVariable("status_id") Long status_to_edit_id) {
-    	Status status_to_edit = sService.findOne(status_to_edit_id);
-    	return "redirect:/";
-    }
+    
+//    @PostMapping("/edit/status/{status_id}")
+//    public String editStatus(@PathVariable("status_id") Long status_to_edit_id) {
+//    	Status status_to_edit = sService.findOne(status_to_edit_id);
+//    	return "redirect:/";
+//    }
+    
+    /////
+    ///// NOT USING THESE MESSAGE ROUTES BELOW ANYMORE BUT I AM STILL SAVING THEM IN CASE
+    /////
     @PostMapping("/message")
     private String createMessage(@Valid @ModelAttribute("message") Message message, BindingResult result, @RequestParam("user_to_render_id") Long user_profile_id, Principal principal){
     	System.out.println("The user profile Id you submitted the message on is: " + user_profile_id);
     	System.out.println("The message is: " + message.getMessage_body());
-
     	//Grabbing logged in User Object
     	String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
@@ -402,15 +493,11 @@ public class MainController {
     	mService.saveMessage(message);
     	//Setting the Long ID back to a string so it works in the URL path variable
     	String user_wall_id_string = user_profile_id.toString();
-    	
-        
-		return "redirect:/message/".concat(user_wall_id_string);
-    	
+		return "redirect:/message/".concat(user_wall_id_string); 	
     }
     @RequestMapping("/message/{user_id}")
     private String postMessage(@PathVariable("user_id") String id){
-		return "redirect:/users/".concat(id);
-    	
+		return "redirect:/users/".concat(id);  	
     }
     @PostMapping("/delete/message/{message_id}/{user_to_render_id}")
     public String deleteMessage(@PathVariable("message_id") Long message_id, @PathVariable("user_to_render_id") Long user_to_render_id) {
@@ -445,6 +532,10 @@ public class MainController {
     	String string_user_to_render_id = user_to_render_id.toString();
     	return "redirect:/users/".concat(string_user_to_render_id);
     }
+
+    /////
+    ///// ^^^^^^^^^^^^NOT USING THE MESSAGE ROUTES ABOVE ANYMORE BUT I AM STILL SAVING THEM^^^^^^^^^^^^^^^^^^
+    /////
     @PostMapping("/status/reply/{status_id}/{user_that_replied_id}")
     private String replyToStatus(@Valid @ModelAttribute("statusReply") StatusReply statusReply, BindingResult result, @PathVariable("status_id") Long id, @PathVariable("user_that_replied_id") Long user_that_replied_id, Principal principal) {
     	//Grabbing logged in User Object
