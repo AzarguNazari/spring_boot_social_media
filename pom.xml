@@ -9,7 +9,6 @@
 	<packaging>war</packaging>
 
 	<name>JavaBeltTwo</name>
-	<description>Java Belt Exam 2nd attempt</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -83,4 +82,5 @@
 	</build>
 
 
+	<description>Social Network app </description>
 </project>

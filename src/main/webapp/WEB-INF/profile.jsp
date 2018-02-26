@@ -17,11 +17,11 @@
     <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
 </head>
 <body>
+	<!-- This is the navbar -->	    
 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-	  <!-- Brand -->
+	
 	  <a class="navbar-brand" href="#">Sam Lobodiak's Social Network App</a>
 	
-	  <!-- Links -->
 	  <ul class="navbar-nav">
 	
 	    <li class="nav-item">
@@ -43,36 +43,44 @@
 	    </li>
 	  </ul>
 	</nav>
-	
+	<!-- END OF NAVABAR -->
+	<!-- END OF NAVABAR -->	    
+	<!-- END OF NAVABAR -->	    
+		    
+	<!-- General container of Web APp-->	    
 	<div class="jumbotron jumbotron-fluid">
 		<div class="container">
-			<c:choose>
-				<c:when test = "${user_to_render.id == currentUser.id}">
-					<h1>My Profile (<span id=""><c:out value="${user_to_render.name}" /></span>)</h1>
-					<img src="<c:url value="http://lotr.wikia.com/wiki/Gandalf"/>"/>
-				</c:when>
-				<c:otherwise>
-					<h1><c:out value="${user_to_render.name}" />'s Wall</h1>
-				</c:otherwise>
-			</c:choose>
-			<c:choose>
-				<c:when test = "${user_to_render.getInvitedUserFriends().contains(currentUser)}">
-					<p class="invited_text">Invited <a href="/profile/cancelinvite/${user_to_render.getId()}">Cancel Invite</a></p>
-				</c:when>
-				<c:when test = "${user_to_render.getFriends().contains(currentUser)}">
-					<p class="invited_text">Already Friends</p>
-				</c:when>
-				<c:when test = "${user_to_render.getUserFriends().contains(currentUser)}">
-					<p class="invited_text">Already Friends</p>
-				</c:when>						         
-				<c:otherwise>
-					<a href="/profile/invite/${user_to_render.getId()}">Invite</a>
-				</c:otherwise>
-			</c:choose>
-			<blockquote class="blockquote">
-				<p><c:out value="${user_to_render.description}"/></p>
-			</blockquote>
-		   	<p>Location: <c:out value="${user_to_render.city}" /> <c:out value="${user_to_render.state}" /></p>
+			<!-- Profile info box-->	    
+		   	<div id="profile-info">
+				<c:choose>
+					<c:when test = "${user_to_render.id == currentUser.id}">
+						<h1>My Profile (<span id=""><c:out value="${user_to_render.name}" /></span>)</h1>
+					</c:when>
+					<c:otherwise>
+						<h1><c:out value="${user_to_render.name}" />'s Wall</h1>
+					</c:otherwise>
+				</c:choose>
+				<c:choose>
+					<c:when test = "${user_to_render == currentUser}">
+					</c:when>						
+					<c:when test = "${user_to_render.getInvitedUserFriends().contains(currentUser)}">
+						<p class="invited_text">Invited <a href="/profile/cancelinvite/${user_to_render.getId()}">Cancel Invite</a></p>
+					</c:when>
+					<c:when test = "${!user_to_render.getFriends().contains(currentUser)}">
+						<a href="/profile/invite/${user_to_render.getId()}">Invite</a>
+					</c:when>						         
+					<c:otherwise>
+					<p>Already Friends</p>
+					</c:otherwise>
+				</c:choose>
+				<blockquote class="blockquote">
+					<p><c:out value="${user_to_render.description}"/></p>
+				</blockquote>
+			   	<p>Location: <c:out value="${user_to_render.city}" /> <c:out value="${user_to_render.state}" /></p>
+		   	
+		   	</div>
+		    
+			<!-- People you accepted invites (Your Network)-->	    
 		    <div id="network">
 				<c:choose>
 					<c:when test = "${user_to_render.id == currentUser.id}">
@@ -92,6 +100,8 @@
 			   	</c:forEach>
 				</div>
 			</div>
+			
+			<!-- People who have invited you box-->	    
 			<div id="invites">
 				<c:choose>
 					<c:when test = "${user_to_render.id == currentUser.id}">
@@ -117,8 +127,14 @@
 				</c:choose>
 	
 		    </div>
-			<div id="the_wall">		    	
+	
+			<!-- The Wall-->	    
+			<div id="the_wall">
+
+				<!-- Status refers to any wall post from a user-->	    		    	
 		    	<div id="status-box">
+		    	
+					<!-- This is where user's can make a post-->	    		    	    	
 			    	<div id="whats-on-your-mind">
 						<c:choose>
 							<c:when test = "${user_to_render.id == currentUser.id}">
@@ -139,41 +155,114 @@
 							</c:otherwise>
 						</c:choose>
 			    	</div>
+			    	
+
+					<!--This is the where the status text bodies append, as well as a form to comment on that status-->	    		    						
 					<div id="status-list">
-		    		<c:forEach items="${wall_statuses}" var="status">
-						<c:choose>
-							<c:when test = "${status.getPoster().id == status.getWall_id()}">
-								<blockquote class="blockquote">
-									<p>
-										<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>	
-									</p>
-								</blockquote>
-							</c:when>
-							<c:otherwise>
-								<blockquote class="blockquote">
-									<p>
-										<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
-										<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
-										<c:choose>
-											<c:when test = "${currentUser.getRoles().contains(ADMIN_ROLE_OBJECT)}">
-								    			<form method="post" action="/delete/status/${status.id }/${user_to_render.id}" class="inline">
-								    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-												  <button type="submit" name="submit_param" value="submit_value" class="link-button">
-												    ADMIN DELETE
-												  </button>
-												</form>
-											</c:when>
-											<c:when test = "${status.getPoster().id == currentUser.id}">
+						<!--  (i can't write "if" comments inside the choose tag because it throws and error so i will write them out here  -->
+			    		<c:forEach items="${wall_statuses}" var="status">
+			    		
+							<!-- THIS CHOOSE IS SAYING IF YOU POSTED IT, IT'S YOUR WALL, OR YOU'RE AN ADMIN, YOU CAN DELETE IT. -->
+							<c:choose>
+								<c:when test = "${status.getPoster().id == currentUser.id}">
+									<blockquote class="blockquote">
+										<p>
+											<a href="/users/${status.getPoster().id}"><span id="poster-name"><c:out value="${status.getPoster().name}"/></span></a>
+											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
+											<span id="delete-status-button">
 								    			<form method="post" action="/delete/status/${status.id}/${user_to_render.id}" class="inline">
 								    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 												  <button type="submit" name="submit_param" value="submit_value" class="link-button">
 												    Delete
 												  </button>
 												</form>
-											</c:when>
-											<c:when test = "${user_to_render.id == currentUser.id}">
+											</span>	
+										</p>
+									</blockquote>
+								</c:when>
+								<c:when test = "${user_to_render.id == currentUser.id}">
+									<blockquote class="blockquote">
+										<p>
+					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
+											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
+											<span id="delete-status-button">
 								    			<form method="post" action="/delete/status/${status.id }/${user_to_render.id}" class="inline">
 								    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+												  <button type="submit" name="submit_param" value="submit_value" class="link-button">
+												    Delete off your wall
+												  </button>
+												</form>
+											</span>
+										</p>
+									</blockquote>
+
+								</c:when>
+								<c:when test = "${currentUser.getRoles().contains(ADMIN_ROLE_OBJECT)}">
+									<blockquote class="blockquote">
+										<p>
+					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
+											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
+											<span id="delete-status-button">
+								    			<form method="post" action="/delete/status/${status.id }/${user_to_render.id}" class="inline">
+								    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+												  <button type="submit" name="submit_param" value="submit_value" class="link-button">
+												    ADMIN DELETE
+												  </button>
+												</form>
+											</span>
+										</p>
+									</blockquote>	
+								</c:when>
+								<c:otherwise>
+									<blockquote class="blockquote">
+										<p>
+					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
+											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
+										</p>
+									</blockquote>	
+								</c:otherwise>
+							</c:choose>
+	
+							<!-- for each status there is a comment box -->
+							<form:form method="POST" action="/status/reply/${status.id}/${user_to_render.id}" modelAttribute="statusReply">
+						       	<div class="form-group row">
+									<div class="col-xs-9">
+										<form:input class="form-control" id="statusReplyBody" name="status-reply" path="statusReplyBody" placeholder="Comment on this status "/>
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="offset-xs-3 col-xs-9">
+								        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>			
+										<button type="submit" class="btn btn-primary">Submit</button>
+									</div>
+								</div>
+							</form:form>
+								    		    	
+							<!-- for each status it posts the replies.  Status reply text body appends here as well as delete functions based on CURRENT USER, SELECTED USER, AND ADMIN USER-->	    		    	
+							<div class="status-reply">
+								<c:forEach items="${status.getRepliedStatusMessages()}" var="reply">
+										<a href="/users/${reply.getUserWhoRepliedToStatus().id}"><c:out value="${reply.getUserWhoRepliedToStatus().name}"/></a>
+										:  <span id="reply-text"><c:out value="${reply.statusReplyBody}"/></span> - <span class="post-date"><c:out value="${reply.createdAt}"/></span>
+										<c:choose>
+											<c:when test = "${currentUser.getRoles().contains(ADMIN_ROLE_OBJECT)}">
+								    			<form method="post" action="/status/reply/delete/${reply.id}/${user_to_render.id}" class="inline">
+								    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+												  <button type="submit" name="submit_param" value="submit_value" class="link-button">
+												    ADMIN DELETE
+												  </button>
+												</form>
+											</c:when>
+											<c:when test = "${user_to_render.id == currentUser.id}">
+								    			<form method="post" action="/status/reply/delete/${reply.id}/${user_to_render.id}" class="inline">
+								    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+												  <button type="submit" name="submit_param" value="submit_value" class="link-button">
+												    Delete reply 
+												  </button>
+												</form>
+											</c:when>
+											<c:when test = "${reply.getUserWhoRepliedToStatus().id == currentUser.id}">
+								    			<form method="post" action="/status/reply/delete/${reply.id}/${user_to_render.id}" class="inline">
+								    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 												  <button type="submit" name="submit_param" value="submit_value" class="link-button">
 												    Delete
 												  </button>
@@ -181,63 +270,11 @@
 											</c:when>
 											<c:otherwise>
 											</c:otherwise>
-										</c:choose>	
-									</p>
-								</blockquote>
-							</c:otherwise>
-						</c:choose>
-
-
-						<form:form method="POST" action="/status/reply/${status.id}/${user_to_render.id}" modelAttribute="statusReply">
-					       	<div class="form-group row">
-								<div class="col-xs-9">
-									<form:input class="form-control" id="statusReplyBody" name="status-reply" path="statusReplyBody" placeholder="Comment on this status "/>
-								</div>
+										</c:choose>
+										<hr>
+								</c:forEach>
 							</div>
-							<div class="form-group row">
-								<div class="offset-xs-3 col-xs-9">
-							        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>			
-									<button type="submit" class="btn btn-primary">Submit</button>
-								</div>
-							</div>
-						</form:form>
-						<div class="status-reply">
-							<c:forEach items="${status.getRepliedStatusMessages()}" var="reply">
-									<a href="/users/${reply.getUserWhoRepliedToStatus().id}"><c:out value="${reply.getUserWhoRepliedToStatus().name}"/></a>
-									:  <span id="reply-text"><c:out value="${reply.statusReplyBody}"/></span> - <span class="post-date"><c:out value="${reply.createdAt}"/></span>
-									<c:choose>
-										<c:when test = "${currentUser.getRoles().contains(ADMIN_ROLE_OBJECT)}">
-							    			<form method="post" action="/status/reply/delete/${reply.id}/${user_to_render.id}" class="inline">
-							    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-											  <button type="submit" name="submit_param" value="submit_value" class="link-button">
-											    ADMIN DELETE
-											  </button>
-											</form>
-										</c:when>
-										<c:when test = "${user_to_render.id == currentUser.id}">
-							    			<form method="post" action="/status/reply/delete/${reply.id}/${user_to_render.id}" class="inline">
-							    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-											  <button type="submit" name="submit_param" value="submit_value" class="link-button">
-											    Delete reply 
-											  </button>
-											</form>
-										</c:when>
-										<c:when test = "${reply.getUserWhoRepliedToStatus().id == currentUser.id}">
-							    			<form method="post" action="/status/reply/delete/${reply.id}/${user_to_render.id}" class="inline">
-							    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-											  <button type="submit" name="submit_param" value="submit_value" class="link-button">
-											    Delete
-											  </button>
-											</form>
-										</c:when>
-										<c:otherwise>
-
-										</c:otherwise>
-									</c:choose>
-									<hr>
-							</c:forEach>
-						</div>
-		    		</c:forEach>
+			    		</c:forEach>
 					</div>
 		    	</div>
 			</div>
@@ -246,6 +283,7 @@
 	<div>
 
 	</div>
+
 
 	    <!-- jQuery first, then Bootstrap JS. -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>

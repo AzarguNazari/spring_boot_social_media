@@ -144,7 +144,7 @@
 					      <c:choose>
 					         <c:when test = "${user.getInvitedUserFriends().contains(currentUser)}">
 			 						<p class="invited_text">Invited</p>
-			 						<a href="/cancelinvite/${user.getId()}">Cancel Invite</a>
+			 						<a href="/cancelinvite/${user.getId()}">Cancel Invitation</a>
 					         </c:when>
 					         <c:when test = "${user.getFriends().contains(currentUser)}">
 			 						<p class="invited_text">Already Friends</p>
