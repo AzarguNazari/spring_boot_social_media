@@ -88,9 +88,10 @@ public class MainController {
 				System.out.println("Saved AS AN ADMIN ROLE");
 			} else {
 				
-				System.out.println("Trying to SAVE as USER ROLE");
 				redirectAttribute.addFlashAttribute("regSuc", "Thank you for registering, please log into to continue");
 				uService.saveWithUserRole(user);
+				System.out.println("SAVED as USER ROLE");
+
 			}
 			
 			
@@ -102,17 +103,17 @@ public class MainController {
 		}
 		
 	}
-	//I believe this route must be gone through first becuase of Java security
+	//I believe this route must be gone through first because of Spring security
     @RequestMapping(value = {"/", "/home"})
     public String home(Principal principal, Model model, @Valid @ModelAttribute("status") Status status, @ModelAttribute("message") Message message, @Valid @ModelAttribute("statusReply") StatusReply statusReply, @Valid @ModelAttribute("message_reply") MessageReply messageReply) {
-        // 1
-    	//this route is prmarily to redirect to our main route
-        String email = principal.getName();
+    	//this route is primarily to redirect to our main route
+    	//grabbing logged in user object starting with principal
+    	String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
         Long logged_user_id = loggedUser.getId();
         System.out.println("ID of person logged in is: " + loggedUser.getId());
         System.out.println("Logged in User object is: " + loggedUser);
-        //Long to string
+        //Making the Long to string to work in the URI
         String string_logged_user_id = logged_user_id.toString();
         return "redirect:/users/".concat(string_logged_user_id);
     }
@@ -121,16 +122,21 @@ public class MainController {
     @RequestMapping("/users/{user_id}")
     public String show(@PathVariable("user_id") Long id, Model model, @ModelAttribute("message") Message message, @ModelAttribute("status") Status status, @Valid @ModelAttribute("message_reply") MessageReply messageReply, @Valid @ModelAttribute("statusReply") StatusReply statusReply, Principal principal) {
         // 1
+    	//grabbing logged in user object starting with principal
         String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
-        model.addAttribute("currentUser", loggedUser);
-        //finding searched user object
-        User selected_user_object = uService.findOne(id);
-//        System.out.println("ID of person logged in is: " + loggedUser.getId());
-//        System.out.println("Logged in User object is: " + loggedUser);
-        List<User> inviting_users = selected_user_object.getInvitedUserFriends();
-        model.addAttribute("users", inviting_users);
         //
+        // Adding loggedUser object to be used in the JSP
+        model.addAttribute("currentUser", loggedUser);
+        //finding the person you clicked on
+        User selected_user_object = uService.findOne(id);
+        //Finding people who invited me
+        List<User> inviting_users = selected_user_object.getInvitedUserFriends();
+        
+        // Adding them to be used in  the JSP
+        model.addAttribute("users", inviting_users);
+        
+        //Getting people who I am connected with (the getUserFriends and getFriends is because the many to many relationship)
         List<User> list = new ArrayList<>();
         for(User u : selected_user_object.getUserFriends()) {
             
@@ -141,11 +147,11 @@ public class MainController {
             list.add(u);
         }
         List<User> invited_me = selected_user_object.getInvitedUserFriends();
-        System.out.println("The list is: " + list);
+        System.out.println("The list  of user objects who are your friend are: " + list);
         System.out.println("amount of people who invited me: " + invited_me);
         System.out.println("Roles for this USER are: " + loggedUser.getRoles());
         
-        //Test Area  (The 2 is reffering to the role id of 2 which is ADMIN
+        //Test Area  (The 2 is referring to the role id of 2 which is ADMIN)
         Long ADMIN_ROLE_ID = (long) 2;
         Role ADMIN_ROLE_OBJECT = roleService.findOne(ADMIN_ROLE_ID);
         if(loggedUser.getRoles().contains(ADMIN_ROLE_OBJECT)) {
@@ -155,11 +161,11 @@ public class MainController {
 
         }
         //
-        //for using profile template but distinguishing currentUser from selected_user
+        //User object of who we clicked on
         model.addAttribute("user_to_render", selected_user_object);
+       
         model.addAttribute("currentUser", loggedUser);
         model.addAttribute("them", list);
-        model.addAttribute("invited_me", invited_me);
         model.addAttribute("user_statuses", selected_user_object.getStatuses());
         model.addAttribute("wall_statuses", sService.findWallStatuses(selected_user_object.getId()));
         model.addAttribute("ADMIN_ROLE_OBJECT", ADMIN_ROLE_OBJECT);
@@ -463,79 +469,6 @@ public class MainController {
     	String string_user_to_render_id = user_to_render_id.toString();
     	return "redirect:/users/".concat(string_user_to_render_id);
     }
-    
-//    @PostMapping("/edit/status/{status_id}")
-//    public String editStatus(@PathVariable("status_id") Long status_to_edit_id) {
-//    	Status status_to_edit = sService.findOne(status_to_edit_id);
-//    	return "redirect:/";
-//    }
-    
-    /////
-    ///// NOT USING THESE MESSAGE ROUTES BELOW ANYMORE BUT I AM STILL SAVING THEM IN CASE
-    /////
-    @PostMapping("/message")
-    private String createMessage(@Valid @ModelAttribute("message") Message message, BindingResult result, @RequestParam("user_to_render_id") Long user_profile_id, Principal principal){
-    	System.out.println("The user profile Id you submitted the message on is: " + user_profile_id);
-    	System.out.println("The message is: " + message.getMessage_body());
-    	//Grabbing logged in User Object
-    	String email = principal.getName();
-        User loggedUser = uService.findByEmail(email);
-        //
-        //Getting loggedUser ID to run a query later
-        Long loggedUserID = loggedUser.getId();
-    	System.out.println("The Logged in User ID is: " + loggedUserID);
-    	
-    	//Setting person who posted it
-    	message.setMessagePoster(loggedUser);
-    	// Setting user_id who's wall it was posted on
-    	message.setUser_wall_id(user_profile_id);
-    	//Using the saveMessage function I made in the Service
-    	mService.saveMessage(message);
-    	//Setting the Long ID back to a string so it works in the URL path variable
-    	String user_wall_id_string = user_profile_id.toString();
-		return "redirect:/message/".concat(user_wall_id_string); 	
-    }
-    @RequestMapping("/message/{user_id}")
-    private String postMessage(@PathVariable("user_id") String id){
-		return "redirect:/users/".concat(id);  	
-    }
-    @PostMapping("/delete/message/{message_id}/{user_to_render_id}")
-    public String deleteMessage(@PathVariable("message_id") Long message_id, @PathVariable("user_to_render_id") Long user_to_render_id) {
-    	Message message_to_delete = mService.findOne(message_id);
-    	mService.remove(message_to_delete);
-    	String string_user_to_render_id = user_to_render_id.toString();
-    	return "redirect:/users/".concat(string_user_to_render_id);
-    }
-    @PostMapping("/message/reply/{message_id}/{user_to_render_id}")
-    private String replyToMessage(@Valid @ModelAttribute("messageReply") MessageReply messageReply, BindingResult result, @PathVariable("message_id") Long id,  @PathVariable("user_to_render_id") Long user_to_render_id, Principal principal) {
-    	//Grabbing logged in User Object
-    	String email = principal.getName();
-        User loggedUser = uService.findByEmail(email);
-        //
-    	//This is the message object we are replying to
-    	Message message_to_reply = mService.findOne(id);
-    	//
-    	System.out.println("The message to reply to is: " + mService.findOne(id));
-    	//Setting a reply for the message object
-    	messageReply.setMessageReplyingTo(message_to_reply);
-    	//Setting who replied (object) loggedUser
-    	messageReply.setUserWhoRepliedToMessage(loggedUser);
-    	messageReplyService.saveMessageReply(messageReply);
-    	String string_user_to_render_id = user_to_render_id.toString();
-    	return "redirect:/users/".concat(string_user_to_render_id);
-    }
-    //Delete message REPLY
-    @PostMapping("/message/reply/delete/{reply_id}/{user_to_render_id}")
-    private String deleteReply(@PathVariable("reply_id") Long reply_ID_to_delete, @PathVariable("user_to_render_id") Long user_to_render_id) {
-    	messageReplyService.remove(reply_ID_to_delete);
-    	//Stringifying the user to render ID to work in the URI and get back to that user's page
-    	String string_user_to_render_id = user_to_render_id.toString();
-    	return "redirect:/users/".concat(string_user_to_render_id);
-    }
-
-    /////
-    ///// ^^^^^^^^^^^^NOT USING THE MESSAGE ROUTES ABOVE ANYMORE BUT I AM STILL SAVING THEM^^^^^^^^^^^^^^^^^^
-    /////
     @PostMapping("/status/reply/{status_id}/{user_that_replied_id}")
     private String replyToStatus(@Valid @ModelAttribute("statusReply") StatusReply statusReply, BindingResult result, @PathVariable("status_id") Long id, @PathVariable("user_that_replied_id") Long user_that_replied_id, Principal principal) {
     	//Grabbing logged in User Object
@@ -560,4 +493,72 @@ public class MainController {
     	String user_to_render_id = user_selected_id.toString();
     	return "redirect:/users/".concat(user_to_render_id);
     }
+    
+    /////
+    ///// ******* NOT USING THESE MESSAGE ROUTES BELOW ANYMORE BUT I AM STILL SAVING THEM IN CASE
+    /////
+//    @PostMapping("/message")
+//    private String createMessage(@Valid @ModelAttribute("message") Message message, BindingResult result, @RequestParam("user_to_render_id") Long user_profile_id, Principal principal){
+//    	System.out.println("The user profile Id you submitted the message on is: " + user_profile_id);
+//    	System.out.println("The message is: " + message.getMessage_body());
+//    	//Grabbing logged in User Object
+//    	String email = principal.getName();
+//        User loggedUser = uService.findByEmail(email);
+//        //
+//        //Getting loggedUser ID to run a query later
+//        Long loggedUserID = loggedUser.getId();
+//    	System.out.println("The Logged in User ID is: " + loggedUserID);
+//    	
+//    	//Setting person who posted it
+//    	message.setMessagePoster(loggedUser);
+//    	// Setting user_id who's wall it was posted on
+//    	message.setUser_wall_id(user_profile_id);
+//    	//Using the saveMessage function I made in the Service
+//    	mService.saveMessage(message);
+//    	//Setting the Long ID back to a string so it works in the URL path variable
+//    	String user_wall_id_string = user_profile_id.toString();
+//		return "redirect:/message/".concat(user_wall_id_string); 	
+//    }
+//    @RequestMapping("/message/{user_id}")
+//    private String postMessage(@PathVariable("user_id") String id){
+//		return "redirect:/users/".concat(id);  	
+//    }
+//    @PostMapping("/delete/message/{message_id}/{user_to_render_id}")
+//    public String deleteMessage(@PathVariable("message_id") Long message_id, @PathVariable("user_to_render_id") Long user_to_render_id) {
+//    	Message message_to_delete = mService.findOne(message_id);
+//    	mService.remove(message_to_delete);
+//    	String string_user_to_render_id = user_to_render_id.toString();
+//    	return "redirect:/users/".concat(string_user_to_render_id);
+//    }
+//    @PostMapping("/message/reply/{message_id}/{user_to_render_id}")
+//    private String replyToMessage(@Valid @ModelAttribute("messageReply") MessageReply messageReply, BindingResult result, @PathVariable("message_id") Long id,  @PathVariable("user_to_render_id") Long user_to_render_id, Principal principal) {
+//    	//Grabbing logged in User Object
+//    	String email = principal.getName();
+//        User loggedUser = uService.findByEmail(email);
+//        //
+//    	//This is the message object we are replying to
+//    	Message message_to_reply = mService.findOne(id);
+//    	//
+//    	System.out.println("The message to reply to is: " + mService.findOne(id));
+//    	//Setting a reply for the message object
+//    	messageReply.setMessageReplyingTo(message_to_reply);
+//    	//Setting who replied (object) loggedUser
+//    	messageReply.setUserWhoRepliedToMessage(loggedUser);
+//    	messageReplyService.saveMessageReply(messageReply);
+//    	String string_user_to_render_id = user_to_render_id.toString();
+//    	return "redirect:/users/".concat(string_user_to_render_id);
+//    }
+    //Delete message REPLY
+//    @PostMapping("/message/reply/delete/{reply_id}/{user_to_render_id}")
+//    private String deleteReply(@PathVariable("reply_id") Long reply_ID_to_delete, @PathVariable("user_to_render_id") Long user_to_render_id) {
+//    	messageReplyService.remove(reply_ID_to_delete);
+//    	//Stringifying the user to render ID to work in the URI and get back to that user's page
+//    	String string_user_to_render_id = user_to_render_id.toString();
+//    	return "redirect:/users/".concat(string_user_to_render_id);
+//    }
+
+    /////
+    ///// ^^^^^^^^^^^^NOT USING THE MESSAGE ROUTES ABOVE ANYMORE BUT I AM STILL SAVING THEM^^^^^^^^^^^^^^^^^^
+    /////
+
 }

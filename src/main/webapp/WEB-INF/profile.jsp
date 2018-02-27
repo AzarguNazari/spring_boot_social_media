@@ -105,7 +105,7 @@
 			<div id="invites">
 				<c:choose>
 					<c:when test = "${user_to_render.id == currentUser.id}">
-					    <h3>Invitations to you: <c:out value="${invited_me.size() }"/></h3>
+					    <h3>Invitations to you: <c:out value="${users.size() }"/></h3>
 					    <table border="3">
 					    	<thead>
 					    		<tr>
@@ -157,7 +157,7 @@
 			    	</div>
 			    	
 
-					<!--This is the where the status text bodies append, as well as a form to comment on that status-->	    		    						
+					<!--This is the where the status text bodies append, as well as a form to comment on that status, and the replies of that status-->	    		    						
 					<div id="status-list">
 						<!--  (i can't write "if" comments inside the choose tag because it throws and error so i will write them out here  -->
 			    		<c:forEach items="${wall_statuses}" var="status">
