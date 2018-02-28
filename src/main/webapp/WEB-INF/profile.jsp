@@ -46,6 +46,8 @@
 	<!-- END OF NAVABAR -->
 	<!-- END OF NAVABAR -->	    
 	<!-- END OF NAVABAR -->	    
+
+	<!-- This HTML template is for both the Current Logged User as well as the Selected User to view -->
 		    
 	<!-- General container of Web APp-->	    
 	<div class="jumbotron jumbotron-fluid">
@@ -96,7 +98,7 @@
 			   	<div style="height:150px;width:320px;padding: 5px;border:1px solid #B2B2B2;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
 				<c:forEach items="${them}" var="user">
 			  		<tr>
-			  			<td><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
+			  			<td><img class="thumbnail-image" alt="image"  width="70" height="80" src="${user.image_address}"><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
 			  			<hr>
 			  		</tr>
 
@@ -119,7 +121,7 @@
 					    	</thead>
 					    	<c:forEach items="${users}" var="user">
 					    		<tr>
-					    			<td><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
+					    			<td><img class="thumbnail-image" alt="image"  width="85" height="90" src="${user.image_address}"><a href="/users/${user.getId()}"><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
 					    			<td><a href="/connect/${user.getId()}">Accept Invitation</a><a href="/deleteinvite/${ user.getId() }">Ignore</a></td>
 					    		</tr>
 					    	</c:forEach>
@@ -165,11 +167,12 @@
 						<!--  (i can't write "if" comments inside the choose tag because it throws and error so i will write them out here  -->
 			    		<c:forEach items="${wall_statuses}" var="status">
 			    		
-							<!-- THIS CHOOSE IS SAYING IF YOU POSTED IT, IT'S YOUR WALL, OR YOU'RE AN ADMIN, YOU CAN DELETE IT. -->
+							<!-- THIS CHOOSE IS SAYING IF YOU POSTED IT, OR IT'S YOUR WALL, OR YOU'RE AN ADMIN, YOU CAN DELETE IT. -->
 							<c:choose>
 								<c:when test = "${status.getPoster().id == currentUser.id}">
 									<blockquote class="blockquote">
 										<p>
+											<img class="thumbnail-image" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
 											<a href="/users/${status.getPoster().id}"><span id="poster-name"><c:out value="${status.getPoster().name}"/></span></a>
 											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
 											<span id="delete-status-button">
@@ -186,6 +189,7 @@
 								<c:when test = "${user_to_render.id == currentUser.id}">
 									<blockquote class="blockquote">
 										<p>
+											<img class="thumbnail-image" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
 					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
 											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
 											<span id="delete-status-button">
@@ -203,6 +207,7 @@
 								<c:when test = "${currentUser.getRoles().contains(ADMIN_ROLE_OBJECT)}">
 									<blockquote class="blockquote">
 										<p>
+											<img class="thumbnail-image" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
 					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
 											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
 											<span id="delete-status-button">
@@ -241,9 +246,10 @@
 								</div>
 							</form:form>
 								    		    	
-							<!-- for each status it posts the replies.  Status reply text body appends here as well as delete functions based on CURRENT USER, SELECTED USER, AND ADMIN USER-->	    		    	
+							<!-- for each status it posts the replies.  Status reply text body appends here as well as delete functions based on CURRENT USER, SELECTED USER, OR ADMIN USER-->	    		    	
 							<div class="status-reply">
 								<c:forEach items="${status.getRepliedStatusMessages()}" var="reply">
+										<img class="thumbnail-image" alt="image"  width="50" height="55" src="${reply.getUserWhoRepliedToStatus().image_address}">					
 										<a href="/users/${reply.getUserWhoRepliedToStatus().id}"><c:out value="${reply.getUserWhoRepliedToStatus().name}"/></a>
 										:  <span id="reply-text"><c:out value="${reply.statusReplyBody}"/></span> - <span class="post-date"><c:out value="${reply.createdAt}"/></span>
 										<c:choose>

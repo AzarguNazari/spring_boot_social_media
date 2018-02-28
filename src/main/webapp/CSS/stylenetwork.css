@@ -36,6 +36,9 @@ table {
 .tables{
 	display: inline-block;
 }
+.name-tag{
+	display: inline-block;
+}
 #pending_invitations{
 	float: right;
 }

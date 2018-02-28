@@ -33,6 +33,12 @@ table {
     display: inline-block;
     margin-left: 52px;
 }
+#profile-picture{
+	margin: 15px
+}
+.thumbnail-image{
+	margin: 10px;
+}
 #network{
 	display: inline-block;
 	

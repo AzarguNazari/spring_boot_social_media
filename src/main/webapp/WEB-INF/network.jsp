@@ -126,7 +126,7 @@
 		  <table class="table table-dark table-striped">
 		    <thead>
 		      <tr>
-				<th>Name</th>
+				<th>Name<p>         </p></th>
 				<th>City</th>
 				<th>State</th>
 				<th>About</th>
@@ -136,7 +136,7 @@
 		    <tbody>
 				<c:forEach var="user" items="${users}">
 					<tr>
-						<td><img id="image-thumbnail" alt="image"  width="33" height="40" src="${user.image_address}"><a href="/users/${user.id}"><c:out value="${user.name}"/></a></td>
+						<td width="25%"><img id="image-thumbnail" alt="image"  width="70" height="70" src="${user.image_address}"><a href="/users/${user.id}" class="name-tag"><c:out value="${user.name}"/></a></td>
 						<td><c:out value="${user.city}"/></td>
 						<td><c:out value="${user.state}"/></td>
 						<td><c:out value="${user.description}"/></td>
@@ -165,133 +165,5 @@
 		</div>
 	</div>
 
-<%-- DON'T TOUCH ANYTHING BELOW THIS LINE --%>
-<hr>
-	<div id="container">
-		<a href="/">My Profile</a>
-		<form id="logoutForm" method="POST" action="/logout">
-	        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-	        <input id="logoutButton" type="submit" value="Logout!" />
-	    </form>
-
-		<h1>Users you may want to connect with</h1>
-		<br>
-		<div id="search-forms-div">
-			<form action="/search" method="POST" class="search-forms">
-				<input id="searchText" type="text" placeholder="Search By Name" name="name" />
-				<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-				<input class="button" type="submit" value="Search By Name"/>
-			</form>
-			<br>
-		   	<form action="/searchByState" method="POST" class="search-forms">
-		   	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-		   	
-				<select name="state">
-					<option value="AL">Alabama</option>
-					<option value="AK">Alaska</option>
-					<option value="AZ">Arizona</option>
-					<option value="AR">Arkansas</option>
-					<option value="CA">California</option>
-					<option value="CO">Colorado</option>
-					<option value="CT">Connecticut</option>
-					<option value="DE">Delaware</option>
-					<option value="DC">District Of Columbia</option>
-					<option value="FL">Florida</option>
-					<option value="GA">Georgia</option>
-					<option value="HI">Hawaii</option>
-					<option value="ID">Idaho</option>
-					<option value="IL">Illinois</option>
-					<option value="IN">Indiana</option>
-					<option value="IA">Iowa</option>
-					<option value="KS">Kansas</option>
-					<option value="KY">Kentucky</option>
-					<option value="LA">Louisiana</option>
-					<option value="ME">Maine</option>
-					<option value="MD">Maryland</option>
-					<option value="MA">Massachusetts</option>
-					<option value="MI">Michigan</option>
-					<option value="MN">Minnesota</option>
-					<option value="MS">Mississippi</option>
-					<option value="MO">Missouri</option>
-					<option value="MT">Montana</option>
-					<option value="NE">Nebraska</option>
-					<option value="NV">Nevada</option>
-					<option value="NH">New Hampshire</option>
-					<option value="NJ">New Jersey</option>
-					<option value="NM">New Mexico</option>
-					<option value="NY">New York</option>
-					<option value="NC">North Carolina</option>
-					<option value="ND">North Dakota</option>
-					<option value="OH">Ohio</option>
-					<option value="OK">Oklahoma</option>
-					<option value="OR">Oregon</option>
-					<option value="PA">Pennsylvania</option>
-					<option value="RI">Rhode Island</option>
-					<option value="SC">South Carolina</option>
-					<option value="SD">South Dakota</option>
-					<option value="TN">Tennessee</option>
-					<option value="TX">Texas</option>
-					<option value="UT">Utah</option>
-					<option value="VT">Vermont</option>
-					<option value="VA">Virginia</option>
-					<option value="WA">Washington</option>
-					<option value="WV">West Virginia</option>
-					<option value="WI">Wisconsin</option>
-					<option value="WY">Wyoming</option>
-				</select>
-				<input class="button" type="submit" value="Search By State"/>			
-			</form>
-		   	<br>
-			<form action="/searchByCity" method="POST" class="search-forms">
-				<input id="searchByCity" type="text" placeholder="Search By City" name="city" />
-				<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-				<input class="button" type="submit" value="Search By City"/>
-			</form>
-		</div>
-		<div class="tables">
-			<table border="3">
-		    	<thead>
-		    		<tr>
-						<th>Name</th>
-						<th>Location</th>
-						<th>Action</th>
-					</tr>
-		    	</thead>
-		    	<c:forEach items="${users}" var="user">
-		    		<tr>
-		    			<td><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
-		    			<td><c:out value="${user.city}"/>, <c:out value="${user.state }"/></td>
-		    			<td>
-					      <c:choose>
-					         <c:when test = "${user.getInvitedUserFriends().contains(currentUser)}">
-		  						<p class="invited_text">Invited</p>
-		  						<a href="/cancelinvite/${user.getId()}">Cancel Invite</a>
-					         </c:when>
-					         <c:otherwise>
-		  						<a href="/invite/${user.getId()}">Invite</a>
-					         </c:otherwise>
-					      </c:choose>
-		    			</td>
-		    		</tr>
-		    	</c:forEach>
-		    </table>
-		</div>
-	    <div class=tables id="pending_invitations">
-			<table border="3" class="tables">
-		    	<thead>
-		    		<tr>
-						<th>Pending Invitations</th>
-	
-					</tr>
-		    	</thead>
-		    	<c:forEach items="${i_invited}" var="user">
-		    		<tr>
-		    			<td><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
-		    		</tr>
-		    	</c:forEach>
-		    </table>
-	    </div>
-
-	</div>
 </body>
 </html>
