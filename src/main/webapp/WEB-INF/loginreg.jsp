@@ -154,6 +154,12 @@
 				</div>
 			</div>
 			<div class="form-group row">
+				<form:label path="image_address" class="col-xs-3 col-form-label mr-2">Profile Picture </form:label>
+				<div class="col-xs-9">
+					<form:textarea class="form-control" id="image_address" name="image_address" path="image_address" placeholder="Right click internet image and copy location" rows="1" cols="40"></form:textarea>
+				</div>
+			</div>
+			<div class="form-group row">
 				<div class="offset-xs-3 col-xs-9">
 			        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>			
 					<button type="submit" class="btn btn-primary">Register</button>

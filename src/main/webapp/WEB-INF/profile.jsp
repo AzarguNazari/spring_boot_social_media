@@ -60,6 +60,9 @@
 						<h1><c:out value="${user_to_render.name}" />'s Wall</h1>
 					</c:otherwise>
 				</c:choose>
+				<div id="profile-picture">
+					<img alt="image"  width="195" height="220" src="${user_to_render.image_address}">
+				</div>
 				<c:choose>
 					<c:when test = "${user_to_render == currentUser}">
 					</c:when>						

@@ -20,6 +20,9 @@
 table {
 	border-radius: 3px;
 }
+#image-thumbnail{
+	margin: 9px;
+}
 .invited_text{
 	display: inline-block;
 }

@@ -4,6 +4,10 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.samuel.javatwo.models.Message;
@@ -65,6 +70,40 @@ public class MainController {
 		return "loginreg.jsp";
 	}
 	
+	@PostMapping("/fileUpload")
+	public String handleFileUpload(Principal principal, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
+    	String email = principal.getName();
+        User loggedUser = uService.findByEmail(email);
+        Long logged_user_id = loggedUser.getId();
+        System.out.println("ID of person logged in is: " + loggedUser.getId());
+        System.out.println("Logged in User object is: " + loggedUser);
+        //Making the Long to string to work in the URI
+        String string_logged_user_id = logged_user_id.toString(); 
+		if (!file.isEmpty()) {
+             try {
+                 String uploadsDir = "/profilepics/";
+                 String realPathtoUploads =  request.getServletContext().getRealPath(uploadsDir);
+                 if(! new File(realPathtoUploads).exists())
+                 {
+                     new File(realPathtoUploads).mkdir();
+                 }
+
+                 System.out.println("realPathtoUploads = {}" + realPathtoUploads);
+
+
+                 String orgName = file.getOriginalFilename();
+                 String filePath = realPathtoUploads + orgName;
+                 File dest = new File(filePath);
+                 file.transferTo(dest);
+             } catch(IOException e) {
+            	 System.out.println("there was an IO error");
+             }
+         }
+		 return "redirect:/users/".concat(string_logged_user_id);
+
+	}
+         
+  
 	@PostMapping("/registration")
 	public String registerUser(@RequestParam("email") String user_email_input, @Valid @ModelAttribute("user") User user, BindingResult result,  RedirectAttributes redirectAttribute) {
 		uValidator.validate(user, result);

@@ -129,9 +129,9 @@
   <table class="table table-dark table-striped">
     <thead>
       <tr>
-		<th>State</th>
 		<th>Name</th>
 		<th>City</th>
+		<th>State</th>		
 		<th>About</th>
 		<th>Action</th>
       </tr>
@@ -139,9 +139,9 @@
     <tbody>
 		<c:forEach var="user" items="${users}">
 			<tr>
-				<td><c:out value="${user.state}"/></td>
-				<td><a href="/users/${user.id}"><c:out value="${user.name}"/></a></td>
+				<td><img id="image-thumbnail" alt="image"  width="33" height="40" src="${user.image_address}"><a href="/users/${user.id}"><c:out value="${user.name}"/></a></td>
 				<td><c:out value="${user.city}"/></td>
+				<td><c:out value="${user.state}"/></td>
 				<td><c:out value="${user.description}"/></td>
 	   			<td>
 			      <c:choose>

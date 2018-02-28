@@ -50,6 +50,8 @@ public class User {
 	@Size(min=2, message="Description must be more than 2 characters.")
 	private String description;
 	
+	private String image_address;
+	
 	@Size(min=5, message="Password must be at least 5 characters")
 	private String password;
 	
@@ -111,6 +113,12 @@ public class User {
 	
     
     
+	public String getImage_address() {
+		return image_address;
+	}
+	public void setImage_address(String image_address) {
+		this.image_address = image_address;
+	}
 	public List<MessageReply> getMessageReplies() {
 		return messageReplies;
 	}
