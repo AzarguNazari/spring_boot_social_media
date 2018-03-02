@@ -34,7 +34,7 @@ public class User {
 	@GeneratedValue
 	private long id;
 	
-	@Size(min=2, message="Name must be more than 2 characters.")
+	@Size(min=1, message="Name must be more than 1 character.")
 	private String name;
 	
 	@Email(message="Email must be valid or unused.")
@@ -44,12 +44,13 @@ public class User {
 	@Size(min=2, message="Pick a state.")
 	private String state;
 	
-	@Size(min=2, message="City must be more than 2 characters.")
+	@Size(min=2, message="City must be more than 1 character.")
 	private String city;
 	
-	@Size(min=2, message="Description must be more than 2 characters.")
+	@Size(min=1, message="Please fill out a description about you.")
 	private String description;
 	
+	@Size(min=1, message="Please copy image location of an image to use as a profile picture.")
 	private String image_address;
 	
 	@Size(min=5, message="Password must be at least 5 characters")

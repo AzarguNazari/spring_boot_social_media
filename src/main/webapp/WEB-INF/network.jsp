@@ -11,8 +11,10 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Users you may want to connect with</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+<title>Your Network</title>
 </head>
 <body>
 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -31,7 +33,7 @@
 			<button type="submit" class="btn btn-secondary">Search</button>
 		</form>
 	    <li class="nav-item">
-	      <a class="nav-link" href="/"><c:out value="${currentUser.name}" />'s Profile</a>
+	      <a class="nav-link" href="/"><img id="nav-profile-thumbnail" alt="image" src="${currentUser.image_address}" height="30" style="margin: 0px 5px 0px 5px"><c:out value="${currentUser.name}" /></a>
 	    </li>
 	    <li>
 			<form id="logoutForm" method="POST" action="/logout">
@@ -126,7 +128,7 @@
 		  <table class="table table-dark table-striped">
 		    <thead>
 		      <tr>
-				<th>Name<p>         </p></th>
+				<th>Name</th>
 				<th>City</th>
 				<th>State</th>
 				<th>About</th>
@@ -136,14 +138,14 @@
 		    <tbody>
 				<c:forEach var="user" items="${users}">
 					<tr>
-						<td width="25%"><img id="image-thumbnail" alt="image"  width="70" height="70" src="${user.image_address}"><a href="/users/${user.id}" class="name-tag"><c:out value="${user.name}"/></a></td>
+						<td width="25%"><img id="image-thumbnail" class="rounded-circle" alt="image"  width="70" height="70" src="${user.image_address}"><a href="/users/${user.id}" class="name-tag"><c:out value="${user.name}"/></a></td>
 						<td><c:out value="${user.city}"/></td>
 						<td><c:out value="${user.state}"/></td>
 						<td><c:out value="${user.description}"/></td>
 			   			<td>
 					      <c:choose>
 					         <c:when test = "${user.getInvitedUserFriends().contains(currentUser)}">
-			 						<p class="invited_text">Invited</p>
+			 						<p class="invited_text">Invitation sent</p>
 			 						<a href="/cancelinvite/${user.getId()}">Cancel Invitation</a>
 					         </c:when>
 					         <c:when test = "${user.getFriends().contains(currentUser)}">

@@ -22,18 +22,15 @@
 	  <ul class="navbar-nav">
 	
 	    <li class="nav-item">
-	      <a class="nav-link" href="/users">Add Users</a>
+			<a class="nav-link" href="/users">Add Users</a>
 	    </li>
-	
-	    <li class="search-bar">
 		<form action="/search" method="POST" class="form-inline" role="search">
 			<input placeholder="Search users" type="text" class="form-control" name="name">
 			<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
 			<button type="submit" class="btn btn-secondary">Search</button>
 		</form>
-	    </li>
 	    <li class="nav-item">
-	      <a class="nav-link" href="/"><c:out value="${currentUser.name}" />'s Profile</a>
+	      <a class="nav-link" href="/"><img id="nav-profile-thumbnail" alt="image" src="${currentUser.image_address}" height="30" style="margin: 0px 5px 0px 5px"><c:out value="${currentUser.name}" /></a>
 	    </li>
 	    <li>
 			<form id="logoutForm" method="POST" action="/logout">
@@ -139,14 +136,14 @@
     <tbody>
 		<c:forEach var="user" items="${users}">
 			<tr>
-				<td><img id="image-thumbnail" alt="image"  width="33" height="40" src="${user.image_address}"><a href="/users/${user.id}"><c:out value="${user.name}"/></a></td>
+				<td width="25%"><img id="image-thumbnail" alt="image"  width="70" height="70" src="${user.image_address}"><a href="/users/${user.id}"><c:out value="${user.name}"/></a></td>
 				<td><c:out value="${user.city}"/></td>
 				<td><c:out value="${user.state}"/></td>
 				<td><c:out value="${user.description}"/></td>
 	   			<td>
 			      <c:choose>
 			         <c:when test = "${user.getInvitedUserFriends().contains(currentUser)}">
-	 						<p class="invited_text">Invited</p>
+	 						<p class="invited_text">Invitation sent</p>
 	 						<a href="/cancelinvite/${user.getId()}">Cancel Invite</a>
 			         </c:when>
 			         <c:when test = "${user.getFriends().contains(currentUser)}">

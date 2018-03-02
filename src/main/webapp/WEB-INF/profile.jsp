@@ -9,23 +9,25 @@
 
 	<title>Professional Profile</title>
     <!-- Required meta tags always come first -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
 </head>
 <body>
 	<!-- This is the navbar -->	    
 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-	
+	  <!-- Brand -->
 	  <a class="navbar-brand" href="#">Sam Lobodiak's Social Network App</a>
 	
+	  <!-- Links -->
 	  <ul class="navbar-nav">
 	
 	    <li class="nav-item">
-	      <a class="nav-link" href="/users">Add Users</a>
+			<a class="nav-link" href="/users">Add Users</a>
 	    </li>
 		<form action="/search" method="POST" class="form-inline" role="search">
 			<input placeholder="Search users" type="text" class="form-control" name="name">
@@ -33,7 +35,7 @@
 			<button type="submit" class="btn btn-secondary">Search</button>
 		</form>
 	    <li class="nav-item">
-	      <a class="nav-link" href="/"><c:out value="${currentUser.name}" />'s Profile</a>
+	      <a class="nav-link" href="/"><img id="nav-profile-thumbnail" alt="image" src="${currentUser.image_address}" height="30" style="margin: 0px 5px 0px 5px"><c:out value="${currentUser.name}" /></a>
 	    </li>
 	    <li>
 			<form id="logoutForm" method="POST" action="/logout">
@@ -63,7 +65,7 @@
 					</c:otherwise>
 				</c:choose>
 				<div id="profile-picture">
-					<img alt="image"  width="195" height="220" src="${user_to_render.image_address}">
+					<img alt="Profile Picture"  width="195" height="220" src="${user_to_render.image_address}">
 				</div>
 				<c:choose>
 					<c:when test = "${user_to_render == currentUser}">
@@ -89,7 +91,7 @@
 		    <div id="network">
 				<c:choose>
 					<c:when test = "${user_to_render.id == currentUser.id}">
-					    <h3>Your Professional network: <c:out value="${them.size() }"/></h3>
+					    <h3>Your network: <c:out value="${them.size() }"/></h3>
 					</c:when>
 					<c:otherwise>
 					    <h3><c:out value="${user_to_render.getName() }"/>'s Professional network: <c:out value="${them.size() }"/></h3>
@@ -98,7 +100,7 @@
 			   	<div style="height:150px;width:320px;padding: 5px;border:1px solid #B2B2B2;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
 				<c:forEach items="${them}" var="user">
 			  		<tr>
-			  			<td><img class="thumbnail-image" alt="image"  width="70" height="80" src="${user.image_address}"><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
+			  			<td><img class="rounded-circle" alt="image" alt="image"  width="70" height="80" src="${user.image_address}"><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
 			  			<hr>
 			  		</tr>
 
@@ -110,28 +112,23 @@
 			<div id="invites">
 				<c:choose>
 					<c:when test = "${user_to_render.id == currentUser.id}">
-					    <h3>Invitations to you: <c:out value="${users.size() }"/></h3>
-					    <table border="3">
-					    	<thead>
-					    		<tr>
-									<th>Name</th>
-									<th>Action</th>
-								</tr>
-								
-					    	</thead>
-					    	<c:forEach items="${users}" var="user">
-					    		<tr>
-					    			<td><img class="thumbnail-image" alt="image"  width="85" height="90" src="${user.image_address}"><a href="/users/${user.getId()}"><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
-					    			<td><a href="/connect/${user.getId()}">Accept Invitation</a><a href="/deleteinvite/${ user.getId() }">Ignore</a></td>
-					    		</tr>
-					    	</c:forEach>
-					    </table>
+					    <h3>You have <c:out value="${users.size() }"/> invitations</h3>
+							   	<div style="height:150px;width:450px;padding: 5px;border:1px solid #B2B2B2;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
+								<c:forEach items="${users}" var="user">
+							  		<tr>
+							  			<td><img class="rounded-circle" alt="image"  width="70" height="80" src="${user.image_address}"><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a> | <a href="/connect/${user.getId()}">Accept Invitation</a><a href="/deleteinvite/${ user.getId() }"> Ignore</a></td>
+							  			<hr>
+							  		</tr>
+				
+							   	</c:forEach>
+								</div>
+
 					</c:when>
 					<c:otherwise>
 					</c:otherwise>
 				</c:choose>
-	
-		    </div>
+
+			</div>
 	
 			<!-- The Wall-->	    
 			<div id="the_wall">
@@ -172,14 +169,14 @@
 								<c:when test = "${status.getPoster().id == currentUser.id}">
 									<blockquote class="blockquote">
 										<p>
-											<img class="thumbnail-image" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
+											<img class="rounded-circle" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
 											<a href="/users/${status.getPoster().id}"><span id="poster-name"><c:out value="${status.getPoster().name}"/></span></a>
 											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
 											<span id="delete-status-button">
 								    			<form method="post" action="/delete/status/${status.id}/${user_to_render.id}" class="inline">
 								    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 												  <button type="submit" name="submit_param" value="submit_value" class="link-button">
-												    Delete
+												    Delete your message
 												  </button>
 												</form>
 											</span>	
@@ -189,7 +186,7 @@
 								<c:when test = "${user_to_render.id == currentUser.id}">
 									<blockquote class="blockquote">
 										<p>
-											<img class="thumbnail-image" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
+											<img class="rounded-circle" alt="image" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
 					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
 											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
 											<span id="delete-status-button">
@@ -207,7 +204,7 @@
 								<c:when test = "${currentUser.getRoles().contains(ADMIN_ROLE_OBJECT)}">
 									<blockquote class="blockquote">
 										<p>
-											<img class="thumbnail-image" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
+											<img class="rounded-circle" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
 					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
 											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
 											<span id="delete-status-button">
@@ -224,6 +221,7 @@
 								<c:otherwise>
 									<blockquote class="blockquote">
 										<p>
+											<img class="rounded-circle" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
 					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
 											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
 										</p>
@@ -249,9 +247,9 @@
 							<!-- for each status it posts the replies.  Status reply text body appends here as well as delete functions based on CURRENT USER, SELECTED USER, OR ADMIN USER-->	    		    	
 							<div class="status-reply">
 								<c:forEach items="${status.getRepliedStatusMessages()}" var="reply">
-										<img class="thumbnail-image" alt="image"  width="50" height="55" src="${reply.getUserWhoRepliedToStatus().image_address}">					
+										<img class="rounded-circle" alt="image" alt="image"  width="50" height="55" src="${reply.getUserWhoRepliedToStatus().image_address}">					
 										<a href="/users/${reply.getUserWhoRepliedToStatus().id}"><c:out value="${reply.getUserWhoRepliedToStatus().name}"/></a>
-										:  <span id="reply-text"><c:out value="${reply.statusReplyBody}"/></span> - <span class="post-date"><c:out value="${reply.createdAt}"/></span>
+										  <span id="reply-text"><c:out value="${reply.statusReplyBody}"/></span> - <span class="post-date"><c:out value="${reply.createdAt}"/></span>
 										<c:choose>
 											<c:when test = "${currentUser.getRoles().contains(ADMIN_ROLE_OBJECT)}">
 								    			<form method="post" action="/status/reply/delete/${reply.id}/${user_to_render.id}" class="inline">
@@ -265,7 +263,7 @@
 								    			<form method="post" action="/status/reply/delete/${reply.id}/${user_to_render.id}" class="inline">
 								    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 												  <button type="submit" name="submit_param" value="submit_value" class="link-button">
-												    Delete reply 
+												    Delete your reply 
 												  </button>
 												</form>
 											</c:when>
@@ -273,7 +271,7 @@
 								    			<form method="post" action="/status/reply/delete/${reply.id}/${user_to_render.id}" class="inline">
 								    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 												  <button type="submit" name="submit_param" value="submit_value" class="link-button">
-												    Delete
+												    Delete your reply
 												  </button>
 												</form>
 											</c:when>
@@ -289,13 +287,9 @@
 			</div>
 		</div>
 	</div>
-	<div>
-
-	</div>
+<hr>
 
 
-	    <!-- jQuery first, then Bootstrap JS. -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>
+
 </body>
 </html>

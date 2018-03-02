@@ -7,7 +7,6 @@
 	font-family: Helvetica;
   	
 }
-
 #logoutForm{
 	float: right;
 	border-radius: 3px;
@@ -86,7 +85,6 @@ table {
 	
 }
 
-/*     */
 .inline {
   display: inline;
 }
@@ -114,6 +112,9 @@ table {
 }
 .post-date{
 	font-size: 11px;
+}
+a{
+	margin: 5px;
 }
 #messages{
 	display: inline-block;
