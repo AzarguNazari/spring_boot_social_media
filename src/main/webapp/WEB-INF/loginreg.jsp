@@ -73,13 +73,13 @@
 			<div class="form-group row">
 				<form:label path="password" class="col-xs-3 col-form-label mr-2">Password</form:label>
 				<div class="col-xs-9">
-					<form:input class="form-control" id="password" name="password" path="password"/>
+					<form:input class="form-control" type="password" id="password" name="password" path="password"/>
 				</div>
 			</div>
 			<div class="form-group row">
 				<form:label path="passwordConfirmation" class="col-xs-3 col-form-label mr-2">Password Confirmation:</form:label>
 				<div class="col-xs-9">
-					<form:input class="form-control" id="passwordConfirmation" name="passwordConfirmation" path="passwordConfirmation"/>
+					<form:input class="form-control" type="password" id="passwordConfirmation" name="passwordConfirmation" path="passwordConfirmation"/>
 				</div>
 			</div>
 			<div class="form-group row">
