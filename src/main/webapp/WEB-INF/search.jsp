@@ -16,11 +16,11 @@
 <body>
 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 	  <!-- Brand -->
-	  <a class="navbar-brand" href="#">Sam Lobodiak's Social Network App</a>
+	  <a class="navbar-brand" href="#">Sam's Social Network App</a>
 	
 	  <!-- Links -->
 	  <ul class="navbar-nav">
-	
+	 	
 	    <li class="nav-item">
 			<a class="nav-link" href="/users">Add Users</a>
 	    </li>
@@ -29,6 +29,12 @@
 			<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
 			<button type="submit" class="btn btn-secondary">Search</button>
 		</form>
+	    <li class="nav-item">
+			<a class="nav-link" href="https://github.com/SamLobodiak/Social-Network">Source Code</a>
+	    </li>
+	    <li class="nav-item">
+			<a class="nav-link" href="https://github.com/SamLobodiak/Social-Network">Sam's Resume</a>
+	    </li>
 	    <li class="nav-item">
 	      <a class="nav-link" href="/"><img id="nav-profile-thumbnail" alt="image" src="${currentUser.image_address}" height="30" style="margin: 0px 5px 0px 5px"><c:out value="${currentUser.name}" /></a>
 	    </li>
