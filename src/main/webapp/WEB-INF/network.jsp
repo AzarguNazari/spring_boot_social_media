@@ -68,7 +68,6 @@
 
 		<form action="/searchByState" method="POST" class="form-inline" role="search">
 			<select name="state">
-					<option value="">Select a state...</option>
 					<option value="AL">Alabama</option>
 					<option value="AK">Alaska</option>
 					<option value="AZ">Arizona</option>
@@ -125,7 +124,7 @@
 			<button type="submit" class="btn btn-secondary">Search By State</button>
 		</form>
 		<c:if test="${message != null}">
-	    	<p class="success"> <c:out value="${message}"/> </p>
+	    	<p class="success" style="color: red"> <c:out value="${message}"/> </p>
 	    </c:if>
 	</nav>
 	<div class="jumbotron jumbotron-fluid">

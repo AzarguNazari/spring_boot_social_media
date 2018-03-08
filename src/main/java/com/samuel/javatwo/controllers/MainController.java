@@ -69,7 +69,6 @@ public class MainController {
 		redirectAttribute.addFlashAttribute("regSuc", "Thank you for registring, please log in to continue");
 		return "loginreg.jsp";
 	}
-	
 	@PostMapping("/fileUpload")
 	public String handleFileUpload(Principal principal, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
     	String email = principal.getName();
@@ -222,7 +221,7 @@ public class MainController {
     	return "redirect:/search/".concat(name);
     }
     @RequestMapping("/search/{name}")
-    public String searchRender(@PathVariable("name") String name, Model model, Principal principal) {
+    public String searchRender(@PathVariable("name") String name, Model model, Principal principal, RedirectAttributes redirectAttrs) {
 		System.out.println("printing what user typed into search bar: " + name);
 		//getting logged in user object
         String email = principal.getName();
@@ -236,6 +235,7 @@ public class MainController {
 		}
     	// if query returns empty list
 		if(users_searched.isEmpty()) {
+			redirectAttrs.addFlashAttribute("message", "Search users by name " + "'" + name + "'" + " did not match any results");
 			return "redirect:/users";
 		} else {
 			model.addAttribute("users", uService.searchByName(name));
@@ -290,7 +290,7 @@ public class MainController {
 		users_searched.remove(loggedUser);
     	// if query returns empty list
 		if(users_searched.isEmpty()) {
-			redirectAttrs.addFlashAttribute("message", "No users are registered in " + city + " right now.");
+			redirectAttrs.addFlashAttribute("message", "Search users by city " + "'" + city + "'" + " did not match any results");
 			return "redirect:/users";
 		} else {
 			model.addAttribute("users", users_searched);

@@ -2,6 +2,7 @@
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -71,7 +72,7 @@
 					</c:otherwise>
 				</c:choose>
 				<div id="profile-picture">
-					<img alt="Profile Picture"  width="195" height="220" src="${user_to_render.image_address}">
+					<img alt="Profile Picture" class="rounded" height="220" src="${user_to_render.image_address}">
 				</div>
 				<c:choose>
 					<c:when test = "${user_to_render == currentUser}">
@@ -106,7 +107,7 @@
 			   	<div style="height:150px;width:320px;padding: 5px;border:1px solid #B2B2B2;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
 				<c:forEach items="${them}" var="user">
 			  		<tr>
-			  			<td><img class="rounded-circle" alt="image" alt="image"  width="70" height="80" src="${user.image_address}"><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
+			  			<td><img class="rounded-circle" alt="image"  width="70" height="80" src="${user.image_address}"><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
 			  			<hr>
 			  		</tr>
 
@@ -175,9 +176,9 @@
 								<c:when test = "${status.getPoster().id == currentUser.id}">
 									<blockquote class="blockquote">
 										<p>
-											<img class="rounded-circle" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
+											<img class="rounded-circle" alt="image" height="105" src="${status.getPoster().image_address}">
 											<a href="/users/${status.getPoster().id}"><span id="poster-name"><c:out value="${status.getPoster().name}"/></span></a>
-											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
+											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><fmt:formatDate type = "both" value = "${status.createdAt}" /></span>
 											<span id="delete-status-button">
 								    			<form method="post" action="/delete/status/${status.id}/${user_to_render.id}" class="inline">
 								    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -192,9 +193,9 @@
 								<c:when test = "${user_to_render.id == currentUser.id}">
 									<blockquote class="blockquote">
 										<p>
-											<img class="rounded-circle" alt="image" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
+											<img class="rounded-circle" alt="image" alt="image" height="105" src="${status.getPoster().image_address}">
 					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
-											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
+											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><fmt:formatDate type = "both" value = "${status.createdAt}" /></span>
 											<span id="delete-status-button">
 								    			<form method="post" action="/delete/status/${status.id }/${user_to_render.id}" class="inline">
 								    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -210,9 +211,9 @@
 								<c:when test = "${currentUser.getRoles().contains(ADMIN_ROLE_OBJECT)}">
 									<blockquote class="blockquote">
 										<p>
-											<img class="rounded-circle" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
+											<img class="rounded-circle" alt="image" height="105" src="${status.getPoster().image_address}">
 					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
-											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
+											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><fmt:formatDate type = "both" value = "${status.createdAt}" /></span>
 											<span id="delete-status-button">
 								    			<form method="post" action="/delete/status/${status.id }/${user_to_render.id}" class="inline">
 								    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -227,9 +228,9 @@
 								<c:otherwise>
 									<blockquote class="blockquote">
 										<p>
-											<img class="rounded-circle" alt="image"  width="95" height="105" src="${status.getPoster().image_address}">
+											<img class="rounded-circle" alt="image" height="90" src="${status.getPoster().image_address}">
 					    					<a href="/users/${status.getPoster().id}"><c:out value="${status.getPoster().name}"/></a>
-											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><c:out value="${status.createdAt}"/></span>
+											<span id="post-text"><c:out value="${status.status_body}"/></span><span class="post-date"><fmt:formatDate type = "both" value = "${status.createdAt}" /></span>
 										</p>
 									</blockquote>	
 								</c:otherwise>
@@ -255,7 +256,7 @@
 								<c:forEach items="${status.getRepliedStatusMessages()}" var="reply">
 										<img class="rounded-circle" alt="image" alt="image"  width="50" height="55" src="${reply.getUserWhoRepliedToStatus().image_address}">					
 										<a href="/users/${reply.getUserWhoRepliedToStatus().id}"><c:out value="${reply.getUserWhoRepliedToStatus().name}"/></a>
-										  <span id="reply-text"><c:out value="${reply.statusReplyBody}"/></span> - <span class="post-date"><c:out value="${reply.createdAt}"/></span>
+										  <span id="reply-text"><c:out value="${reply.statusReplyBody}"/></span> - <span class="post-date"><fmt:formatDate type = "both" value = "${reply.createdAt}" /></span>
 										<c:choose>
 											<c:when test = "${currentUser.getRoles().contains(ADMIN_ROLE_OBJECT)}">
 								    			<form method="post" action="/status/reply/delete/${reply.id}/${user_to_render.id}" class="inline">

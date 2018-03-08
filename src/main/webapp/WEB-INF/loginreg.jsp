@@ -55,7 +55,7 @@
 
 	    <form:form method="POST" action="/registration" modelAttribute="user">
 			<div class="form-group row">
-				<form:label path="name" class="col-xs-3 col-form-label mr-2">Name:</form:label>
+				<form:label path="name" class="col-xs-3 col-form-label mr-2">Name</form:label>
 				<div class="col-xs-9">
 					<form:input class="form-control" id="name" name="name" path="name"/>
 				</div>
@@ -77,7 +77,7 @@
 				</div>
 			</div>
 			<div class="form-group row">
-				<form:label path="passwordConfirmation" class="col-xs-3 col-form-label mr-2">Password Confirmation:</form:label>
+				<form:label path="passwordConfirmation" class="col-xs-3 col-form-label mr-2">Password Confirmation</form:label>
 				<div class="col-xs-9">
 					<form:input class="form-control" type="password" id="passwordConfirmation" name="passwordConfirmation" path="passwordConfirmation"/>
 				</div>
@@ -156,7 +156,7 @@
 			<div class="form-group row">
 				<form:label path="image_address" class="col-xs-3 col-form-label mr-2">Profile Picture </form:label>
 				<div class="col-xs-9">
-					<form:textarea class="form-control" id="image_address" name="image_address" path="image_address" placeholder="Right click internet image and copy location/address" rows="1" cols="40"></form:textarea>
+					<form:textarea class="form-control" id="image_address" name="image_address" path="image_address" placeholder="Right click the internet image and select 'Copy image address/location' and paste it here" rows="3" cols="40"></form:textarea>
 				</div>
 			</div>
 			<div class="form-group row">
