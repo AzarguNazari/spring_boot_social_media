@@ -11,6 +11,42 @@
 	float: right;
 	border-radius: 3px;
 }
+div.scrollmenu-invites {
+    background-color: #333;
+    overflow: auto;
+    white-space: nowrap;
+    width: 333px;
+}
+
+div.scrollmenu-invites a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+}
+
+div.scrollmenu-invites a:hover {
+    background-color: #777;
+}
+
+div.scrollmenu-network {
+    background-color: #333;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+div.scrollmenu-network a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+}
+
+div.scrollmenu-network a:hover {
+    background-color: #777;
+}
 h1{
 	display: inline-block;
 }

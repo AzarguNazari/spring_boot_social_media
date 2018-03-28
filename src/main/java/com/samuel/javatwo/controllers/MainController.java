@@ -1,11 +1,11 @@
 package com.samuel.javatwo.controllers;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -198,6 +198,10 @@ public class MainController {
         	System.out.println("PRINT TEST DID NOT WORK------------------------------------");
 
         }
+        List<Status> TEST_list_to_reverse = sService.findWallStatuses(selected_user_object.getId());
+        
+        Collections.reverse(TEST_list_to_reverse);
+        
         //
         //User object of who we clicked on
         model.addAttribute("user_to_render", selected_user_object);
@@ -207,6 +211,8 @@ public class MainController {
         model.addAttribute("user_statuses", selected_user_object.getStatuses());
         model.addAttribute("wall_statuses", sService.findWallStatuses(selected_user_object.getId()));
         model.addAttribute("ADMIN_ROLE_OBJECT", ADMIN_ROLE_OBJECT);
+        model.addAttribute("TESTING123", TEST_list_to_reverse);
+
 
     	model.addAttribute("wall_messages", mService.findWallMessages(selected_user_object.getId()));
     	

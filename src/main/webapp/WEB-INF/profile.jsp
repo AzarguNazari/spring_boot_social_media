@@ -61,8 +61,10 @@
 	<!-- General container of Web APp-->	    
 	<div class="jumbotron jumbotron-fluid">
 		<div class="container">
-			<!-- Profile info box-->	    
+			<!-- Profile info box-->
+	    
 		   	<div id="profile-info">
+		   	
 				<c:choose>
 					<c:when test = "${user_to_render.id == currentUser.id}">
 						<h1>My Profile (<span id=""><c:out value="${user_to_render.name}" /></span>)</h1>
@@ -71,6 +73,7 @@
 						<h1><c:out value="${user_to_render.name}" />'s Wall</h1>
 					</c:otherwise>
 				</c:choose>
+				 
 				<div id="profile-picture">
 					<img alt="Profile Picture" class="rounded" height="220" src="${user_to_render.image_address}">
 				</div>
@@ -104,18 +107,17 @@
 					    <h3><c:out value="${user_to_render.getName() }"/>'s Professional network: <c:out value="${them.size() }"/></h3>
 					</c:otherwise>
 				</c:choose>
-			   	<div style="height:150px;width:320px;padding: 5px;border:1px solid #B2B2B2;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
+			   	<div class="scrollmenu-network">
 				<c:forEach items="${them}" var="user">
 			  		<tr>
 			  			<td><img class="rounded-circle" alt="image"  width="70" height="80" src="${user.image_address}"><a href="/users/${user.getId()}"><c:out value="${user.getName() }"/></a></td>
-			  			<hr>
 			  		</tr>
-
 			   	</c:forEach>
 				</div>
 			</div>
 			
 			<!-- People who have invited you box-->	    
+			<h3 style="none">You have <c:out value="${users.size() }"/> invitations</h3>
 			<div id="invites">
 				<c:choose>
 					<c:when test = "${user_to_render.id == currentUser.id}">
@@ -169,7 +171,7 @@
 					<!--This is the where the status text bodies append, as well as a form to comment on that status, and the replies of that status-->	    		    						
 					<div id="status-list">
 						<!--  (i can't write "if" comments inside the choose tag because it throws and error so i will write them out here  -->
-			    		<c:forEach items="${wall_statuses}" var="status">
+			    		<c:forEach items="${TESTING123}" var="status">
 			    		
 							<!-- THIS CHOOSE IS SAYING IF YOU POSTED IT, OR IT'S YOUR WALL, OR YOU'RE AN ADMIN, YOU CAN DELETE IT. -->
 							<c:choose>
