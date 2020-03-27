@@ -1,12 +1,63 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Admin</title>
-    </head>
-    <body>
-        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]! (admin)</h1>
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
-        </form>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="stylesheet" type="text/css" href="../CSS/styleAdmin.css">
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="container">
+		<form id="logoutForm" method="POST" action="/logout">
+	        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+	        <input id="logoutButton" type="submit" value="Logout!" />
+	    </form>
+	    <br>
+		<form action="/admin/searchByName" method="POST">
+			<input id="searchText" type="text" placeholder="Search By Name" name="name" />
+			<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+			<input class="button" type="submit" value="Search By Name"/>
+		</form>
+		<br>
+		<form action="/admin/searchUserById" method="POST">
+			<input id="searchId" type="number" placeholder="Search By User ID" name="id" />
+			<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+			<input class="button" type="submit" value="Search By User Id"/>
+		</form>
+		<th:if test="${message != null}">
+	    	<p class="success"> <th:out value="${message}"/> </p>
+	    </th:if>
+	   	<br>
+		<table border="3">
+	    	<thead>
+	    		<tr>
+					<th>User ID</th>
+					<th>Name</th>
+					<th>Location</th>
+					<th>Number of Wall Posts (not including replies)</th>
+					<th>Created At</th>
+					<th>Action</th>
+				</tr>
+	    	</thead>
+	    	<th:forEach items="${all_users}" var="user">
+	    		<tr>
+	    			<td><th:out value="${user.id}"/></td>
+	    			<td><a href="/users/${user.getId()}"><th:out value="${user.getName() }"/></a></td>
+	    			<td><th:out value="${user.city}"/>, <th:out value="${user.state }"/></td>
+					<td><th:out value="${user.getStatuses().size()}"/></td>
+	    			
+	    			<td><th:out value="${user.createdAt}"/></td>
+	    			<td>
+		    			<form method="post" action="/admin/deleteuser/${user.id}" class="inline">
+		    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+						  <button type="submit" name="submit_param" value="submit_value" class="link-button">
+						    Terminate User
+						  </button>
+						</form>
+	    			</td>
+	    		</tr>
+	    	</th:forEach>
+	    </table>
+	</div>
+</body>
 </html>

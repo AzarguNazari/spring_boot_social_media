@@ -43,7 +43,7 @@ public class AdminController {
     	all_users.remove(loggedAdmin);
     	model.addAttribute("all_users", all_users);
     	
-    	return "admin.jsp";
+    	return "admin.html";
     }
     @PostMapping("/deleteuser/{user_id}")
     public String adminDeleteUser(@PathVariable("user_id") Long selected_user_id, Model model) {
@@ -70,7 +70,7 @@ public class AdminController {
 		System.out.println("User object with that ID is: " + user_searched);
 
 		model.addAttribute("single_user", user_searched);
-		return "adminSearchUser.jsp";			
+		return "adminSearchUser.html";
 
     }
     
@@ -85,7 +85,7 @@ public class AdminController {
 		System.out.println("User object with that Name containing is is: " + users_searched);
 
 		model.addAttribute("users", users_searched);
-		return "adminSearchUser.jsp";			
+		return "adminSearchUser.html";
 
     }
 }

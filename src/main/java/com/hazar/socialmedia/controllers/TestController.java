@@ -35,7 +35,7 @@ public class TestController {
 		this.mService = mService;
 		this.messageReplyService = messageReplyService;
 	}
-	//Trying to make show profile render with profile.jsp template
+	//Trying to make show profile render with profile.html template
     @RequestMapping("/users/{user_id}")
     public String testingShow(@PathVariable("user_id") Long id, Model model, @ModelAttribute("message") Message message, Principal principal) {
         // 1
@@ -80,6 +80,6 @@ public class TestController {
         System.out.println("The listTest of objects is: " + listTest);
     	//
     	//Getting message replies
-        return "profile.jsp";
+        return "profile.html";
     }
 }

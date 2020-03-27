@@ -68,7 +68,7 @@ public class MainController {
             model.addAttribute("logoutMessage", "Logout Successful!");
         }
 		redirectAttribute.addFlashAttribute("regSuc", "Thank you for registring, please log in to continue");
-		return "loginreg.jsp";
+		return "loginreg.html";
 	}
 	@PostMapping("/fileUpload")
 	public String handleFileUpload(Principal principal, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
@@ -118,7 +118,7 @@ public class MainController {
 		};
 		if(result.hasErrors()) {
 			System.out.println("DID NOT PASS VALIDATIONS");
-			return "loginreg.jsp";
+			return "loginreg.html";
 		} else {
 			//To make first created User (me) an Admin
 			System.out.println("PASSED VALIDATIONS ");
@@ -217,7 +217,7 @@ public class MainController {
 
     	model.addAttribute("wall_messages", mService.findWallMessages(selected_user_object.getId()));
     	
-        return "profile.jsp";
+        return "profile.html";
     }
     
     @PostMapping("/search")
@@ -248,7 +248,7 @@ public class MainController {
 			model.addAttribute("users", uService.searchByName(name));
 			model.addAttribute("currentUser", loggedUser);
 
-			return "search.jsp";			
+			return "search.html";
 		}
     }
     @PostMapping("/searchByState")
@@ -276,7 +276,7 @@ public class MainController {
 			model.addAttribute("state_selected", state);
 			model.addAttribute("currentUser", loggedUser);
 
-			return "search.jsp";			
+			return "search.html";
 		}
     }
     @PostMapping("/searchByCity")
@@ -304,7 +304,7 @@ public class MainController {
 			model.addAttribute("state_selected", city);
 			model.addAttribute("currentUser", loggedUser);
 
-			return "search.jsp";			
+			return "search.html";
 		}
     }
     @RequestMapping("/deleteinvite/{user_id}")
@@ -364,7 +364,7 @@ public class MainController {
         model.addAttribute("currentUser", loggedUser);
 
         //^^^^^^
-        return "network.jsp";
+        return "network.html";
     }
     
     @RequestMapping("/connect/{person_to_connect_id}")
