@@ -1,0 +1,12 @@
+--create schema socialmedia;
+--
+--create table user
+--(
+--  id       int auto_increment
+--    primary key,
+--  email    varchar(255) null,
+--  password varchar(255) null,
+--  role     int          null,
+--  username varchar(255) null
+--);
+--
