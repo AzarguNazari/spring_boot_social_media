@@ -18,17 +18,19 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Email;
 
 
 
 @Entity
 @Table(name="users")
+@Data
+@Builder
+@NoArgsConstructor
 public class User {
-	
-	public User () {
-		
-	}
 	
 	@Id
 	@GeneratedValue
@@ -111,124 +113,7 @@ public class User {
 	
     @OneToMany(mappedBy="userWhoRepliedToMessage", fetch = FetchType.LAZY)
     private List<MessageReply> messageReplies;
-	
-    
-    
-	public String getImage_address() {
-		return image_address;
-	}
-	public void setImage_address(String image_address) {
-		this.image_address = image_address;
-	}
-	public List<MessageReply> getMessageReplies() {
-		return messageReplies;
-	}
-	public void setMessageReplies(List<MessageReply> messageReplies) {
-		this.messageReplies = messageReplies;
-	}
-	public List<Message> getMessages() {
-		return messages;
-	}
-	public void setMessages(List<Message> messages) {
-		this.messages = messages;
-	}
-	public List<Status> getStatuses() {
-		return statuses;
-	}
-	public void setStatuses(List<Status> statuses) {
-		this.statuses = statuses;
-	}
-	public String getCity() {
-		return city;
-	}
-	public void setCity(String city) {
-		this.city = city;
-	}
-	public String getState() {
-		return state;
-	}
-	public void setState(String state) {
-		this.state = state;
-	}
-	public List<User> getInvitedFriends() {
-		return invitedFriends;
-	}
-	public void setInvitedFriends(List<User> invitedFriends) {
-		this.invitedFriends = invitedFriends;
-	}
-	public List<User> getInvitedUserFriends() {
-		return invitedUserFriends;
-	}
-	public void setInvitedUserFriends(List<User> invitedUserFriends) {
-		this.invitedUserFriends = invitedUserFriends;
-	}
-	public List<User> getFriends() {
-		return friends;
-	}
-	public void setFriends(List<User> friends) {
-		this.friends = friends;
-	}
-	public List<User> getUserFriends() {
-		return userFriends;
-	}
-	public void setUserFriends(List<User> userFriends) {
-		this.userFriends = userFriends;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getPasswordConfirmation() {
-		return passwordConfirmation;
-	}
-	public void setPasswordConfirmation(String passwordConfirmation) {
-		this.passwordConfirmation = passwordConfirmation;
-	}
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-	public List<Role> getRoles() {
-		return roles;
-	}
-	public void setRoles(List<Role> roles) {
-		this.roles = roles;
-	}
+
 	
 	@PrePersist
     protected void onCreate(){

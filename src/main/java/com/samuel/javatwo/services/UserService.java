@@ -50,7 +50,7 @@ public class UserService {
         userRepository.save(user);
     }
     public User getPerson(Long id) {
-    	return userRepository.findOne(id);
+    	return userRepository.findById(id).get();
     }
     public List<User> findAll(){
     	return userRepository.findAll();
@@ -59,7 +59,7 @@ public class UserService {
 
 	public User findOne(Long id) {
 		// TODO Auto-generated method stub
-		return userRepository.findOne(id);
+		return userRepository.findById(id).get();
 	}
 
 	public void save(User loggedUser) {

@@ -59,6 +59,7 @@ public class MainController {
 	@RequestMapping("/login")
 	public String loginForm(@Valid @ModelAttribute("user") User user, RedirectAttributes redirectAttribute, @RequestParam(value="error", required=false) String error,
     		@RequestParam(value="logout", required=false) String logout, Model model) {
+
 		System.out.println("made it back to login");
         if(error != null) {
             model.addAttribute("errorMessage", "Invalid Credentials, Please try again.");

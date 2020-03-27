@@ -20,6 +20,7 @@ public class UserValidator implements Validator{
         
         if (!user.getPasswordConfirmation().equals(user.getPassword())) {
             // 3
+
             errors.rejectValue("passwordConfirmation", "Match");
         }         
     }

@@ -27,12 +27,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.headers().frameOptions().disable();
         http.
             authorizeRequests()
-                .antMatchers("/CSS/**", "/registration").permitAll()
+                .antMatchers("/CSS/**", "/registration", "/h2-console/**").permitAll()
                 .antMatchers("/admin/**").access("hasRole('ADMIN')")
                 .anyRequest().authenticated()
-                .and()
+                .and().csrf().disable()
             .formLogin()
                 .loginPage("/login")
                 .usernameParameter("email")
@@ -40,6 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             .logout()
                 .permitAll();
+
     }
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
