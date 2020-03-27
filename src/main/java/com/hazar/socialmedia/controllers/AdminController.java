@@ -3,6 +3,8 @@ package com.hazar.socialmedia.controllers;
 import java.security.Principal;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,10 @@ import com.hazar.socialmedia.validators.UserValidator;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
+
+
 	private final UserValidator uValidator;
 	private final UserService uService;
 	private final StatusService sService;
@@ -61,13 +67,13 @@ public class AdminController {
     }
     @PostMapping("/searchUserById")
     public String adminSearchById(@RequestParam("id") Long user_id, Model model) {
-		System.out.println("printing what user typed into search bar: " + user_id);
+		LOGGER.debug("printing what user typed into search bar: " + user_id);
 		if(user_id == null) {
-			System.out.println("Empty input,  redirecting back to admin home");
+			LOGGER.debug("Empty input,  redirecting back to admin home");
 			return "redirect:/admin/home";
 		}
 		User user_searched = uService.findOne(user_id);
-		System.out.println("User object with that ID is: " + user_searched);
+		LOGGER.debug("User object with that ID is: " + user_searched);
 
 		model.addAttribute("single_user", user_searched);
 		return "adminSearchUser.html";
@@ -76,13 +82,14 @@ public class AdminController {
     
     @PostMapping("/searchByName")
     public String adminSearchByName(@RequestParam("name") String name, Model model) {
-		System.out.println("printing what user typed into search bar: " + name);
+		LOGGER.debug("printing what user typed into search bar: " + name);
 		if(name == null) {
-			System.out.println("Empty input,  redirecting back to admin home");
+			LOGGER.debug("Empty input,  redirecting back to admin home");
 			return "redirect:/admin/home";
 		}
 		List<User> users_searched = uService.searchByName(name);
-		System.out.println("User object with that Name containing is is: " + users_searched);
+
+		LOGGER.debug("User object with that Name containing is is: " + users_searched);
 
 		model.addAttribute("users", users_searched);
 		return "adminSearchUser.html";

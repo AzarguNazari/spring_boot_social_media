@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,7 +24,11 @@ import com.hazar.socialmedia.validators.UserValidator;
 @Controller
 @RequestMapping("/test")
 public class TestController {
-	private final UserValidator uValidator;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+
+
+    private final UserValidator uValidator;
 	private final UserService uService;
 	private final StatusService sService;
 	private final MessageService mService;
@@ -44,8 +50,8 @@ public class TestController {
         model.addAttribute("currentUser", loggedUser);
         //finding searched user object
         User selected_user_object = uService.findOne(id);
-//        System.out.println("ID of person logged in is: " + loggedUser.getId());
-//        System.out.println("Logged in User object is: " + loggedUser);
+//        LOGGER.debug("ID of person logged in is: " + loggedUser.getId());
+//        LOGGER.debug("Logged in User object is: " + loggedUser);
         List<User> inviting_users = selected_user_object.getInvitedUserFriends();
         model.addAttribute("users", inviting_users);
         //
@@ -59,8 +65,8 @@ public class TestController {
             list.add(u);
         }
         List<User> invited_me = selected_user_object.getInvitedUserFriends();
-        System.out.println("The list is: " + list);
-        System.out.println("amount of people who invited me: " + invited_me);
+        LOGGER.debug("The list is: " + list);
+        LOGGER.debug("amount of people who invited me: " + invited_me);
         model.addAttribute("them", list);
         model.addAttribute("invited_me", invited_me);
         model.addAttribute("user_statuses", selected_user_object.getStatuses());
@@ -77,7 +83,7 @@ public class TestController {
             
         	listTest.add(message1);
         }
-        System.out.println("The listTest of objects is: " + listTest);
+        LOGGER.debug("The listTest of objects is: " + listTest);
     	//
     	//Getting message replies
         return "profile.html";

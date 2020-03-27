@@ -10,6 +10,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,6 +39,10 @@ import com.hazar.socialmedia.validators.UserValidator;
 
 @Controller
 public class MainController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+
+
 	private final UserValidator uValidator;
 	private final UserService uService;
 	private final StatusService sService;
@@ -60,7 +66,7 @@ public class MainController {
 	public String loginForm(@Valid @ModelAttribute("user") User user, RedirectAttributes redirectAttribute, @RequestParam(value="error", required=false) String error,
     		@RequestParam(value="logout", required=false) String logout, Model model) {
 
-		System.out.println("made it back to login");
+		LOGGER.debug("made it back to login");
         if(error != null) {
             model.addAttribute("errorMessage", "Invalid Credentials, Please try again.");
         }
@@ -75,8 +81,8 @@ public class MainController {
     	String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
         Long logged_user_id = loggedUser.getId();
-        System.out.println("ID of person logged in is: " + loggedUser.getId());
-        System.out.println("Logged in User object is: " + loggedUser);
+        LOGGER.debug("ID of person logged in is: " + loggedUser.getId());
+        LOGGER.debug("Logged in User object is: " + loggedUser);
         //Making the Long to string to work in the URI
         String string_logged_user_id = logged_user_id.toString(); 
 		if (!file.isEmpty()) {
@@ -88,7 +94,7 @@ public class MainController {
                      new File(realPathtoUploads).mkdir();
                  }
 
-                 System.out.println("realPathtoUploads = {}" + realPathtoUploads);
+                 LOGGER.debug("realPathtoUploads = {}" + realPathtoUploads);
 
 
                  String orgName = file.getOriginalFilename();
@@ -96,7 +102,7 @@ public class MainController {
                  File dest = new File(filePath);
                  file.transferTo(dest);
              } catch(IOException e) {
-            	 System.out.println("there was an IO error");
+            	 LOGGER.debug("there was an IO error");
              }
          }
 		 return "redirect:/users/".concat(string_logged_user_id);
@@ -109,32 +115,32 @@ public class MainController {
 		uValidator.validate(user, result);
 		//Grabbing all emails to compare a .contains().
 		List<String> all_user_emails = uService.findAllEmails();
-		System.out.println(user_email_input);
+		LOGGER.debug(user_email_input);
 		///Checking to see if duplicate email exists and throwing error otherwise (there may be a better way to do it but i'm making this work right now)
 		if(all_user_emails.contains(user_email_input)) {
-			System.out.println("That email is a duplicate");
+			LOGGER.debug("That email is a duplicate");
 			redirectAttribute.addFlashAttribute("emailDuplicateError", "That email already exists");
 			return "redirect:/login";
 		};
 		if(result.hasErrors()) {
-			System.out.println("DID NOT PASS VALIDATIONS");
+			LOGGER.debug("DID NOT PASS VALIDATIONS");
 			return "loginreg.html";
 		} else {
 			//To make first created User (me) an Admin
-			System.out.println("PASSED VALIDATIONS ");
+			LOGGER.debug("PASSED VALIDATIONS ");
 			if(uService.findAll().size() == 0) {
 				uService.saveUserWithAdminRole(user);
-				System.out.println("Saved AS AN ADMIN ROLE");
+				LOGGER.debug("Saved AS AN ADMIN ROLE");
 			} else {
 				
 				redirectAttribute.addFlashAttribute("regSuc", "Thank you for registering, please log into to continue");
 				uService.saveWithUserRole(user);
-				System.out.println("SAVED as USER ROLE");
+				LOGGER.debug("SAVED as USER ROLE");
 
 			}
 			
 			
-			System.out.println("Saved USER");
+			LOGGER.debug("Saved USER");
 			
 			redirectAttribute.addFlashAttribute("regSuc", "Thank you for registering, please log into to continue");
 
@@ -150,8 +156,8 @@ public class MainController {
     	String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
         Long logged_user_id = loggedUser.getId();
-        System.out.println("ID of person logged in is: " + loggedUser.getId());
-        System.out.println("Logged in User object is: " + loggedUser);
+        LOGGER.debug("ID of person logged in is: " + loggedUser.getId());
+        LOGGER.debug("Logged in User object is: " + loggedUser);
         //Making the Long to string to work in the URI
         String string_logged_user_id = logged_user_id.toString();
         return "redirect:/users/".concat(string_logged_user_id);
@@ -186,17 +192,17 @@ public class MainController {
             list.add(u);
         }
         List<User> invited_me = selected_user_object.getInvitedUserFriends();
-        System.out.println("The list  of user objects who are your friend are: " + list);
-        System.out.println("amount of people who invited me: " + invited_me);
-        System.out.println("Roles for this USER are: " + loggedUser.getRoles());
+        LOGGER.debug("The list  of user objects who are your friend are: " + list);
+        LOGGER.debug("amount of people who invited me: " + invited_me);
+        LOGGER.debug("Roles for this USER are: " + loggedUser.getRoles());
         
         //Test Area  (The 2 is referring to the role id of 2 which is ADMIN)
         Long ADMIN_ROLE_ID = (long) 2;
         Role ADMIN_ROLE_OBJECT = roleService.findOne(ADMIN_ROLE_ID);
         if(loggedUser.getRoles().contains(ADMIN_ROLE_OBJECT)) {
-        	System.out.println("--TEST WORKED----------------------------------");
+        	LOGGER.debug("--TEST WORKED----------------------------------");
         }else {
-        	System.out.println("PRINT TEST DID NOT WORK------------------------------------");
+        	LOGGER.debug("PRINT TEST DID NOT WORK------------------------------------");
 
         }
         List<Status> TEST_list_to_reverse = sService.findWallStatuses(selected_user_object.getId());
@@ -229,16 +235,16 @@ public class MainController {
     }
     @RequestMapping("/search/{name}")
     public String searchRender(@PathVariable("name") String name, Model model, Principal principal, RedirectAttributes redirectAttrs) {
-		System.out.println("printing what user typed into search bar: " + name);
+		LOGGER.debug("printing what user typed into search bar: " + name);
 		//getting logged in user object
         String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
         //
 		List<User>  users_searched = uService.searchByName(name);
-		System.out.println("User objects with related name: " + users_searched);
+		LOGGER.debug("User objects with related name: " + users_searched);
 		users_searched.remove(loggedUser);
 		if(name == null) {
-			System.out.println("Empty input");
+			LOGGER.debug("Empty input");
 		}
     	// if query returns empty list
 		if(users_searched.isEmpty()) {
@@ -260,13 +266,13 @@ public class MainController {
     }
     @RequestMapping("/searchByState/{state}")
     public String searchUserBystate(@PathVariable("state") String state, Model model, RedirectAttributes redirectAttrs, Principal principal) {
-		System.out.println("printing what user typed into search bar: " + state);
+		LOGGER.debug("printing what user typed into search bar: " + state);
         String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
 		List<User>  users_searched = uService.searchByState(state);
 		users_searched.remove(loggedUser);
 		
-		System.out.println("User objects with related name: " + users_searched);
+		LOGGER.debug("User objects with related name: " + users_searched);
     	// if query returns empty list
 		if(users_searched.isEmpty()) {
 			redirectAttrs.addFlashAttribute("message", "No users are registered in " + state + " right now.");
@@ -289,11 +295,11 @@ public class MainController {
     }
     @RequestMapping("/searchByCity/{city}")
     public String searchUserBycity(@PathVariable("city") String city, Model model, RedirectAttributes redirectAttrs, Principal principal) {
-		System.out.println("printing what user typed into search bar: " + city);
+		LOGGER.debug("printing what user typed into search bar: " + city);
         String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
 		List<User>  users_searched = uService.searchByCity(city);
-		System.out.println("User objects with related city: " + users_searched);
+		LOGGER.debug("User objects with related city: " + users_searched);
 		users_searched.remove(loggedUser);
     	// if query returns empty list
 		if(users_searched.isEmpty()) {
@@ -340,7 +346,7 @@ public class MainController {
     	String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
     	//Using all users as a place holder for now
-        System.out.println("Id of the loggedUser is: " + loggedUser.getId());
+        LOGGER.debug("Id of the loggedUser is: " + loggedUser.getId());
         List<User> people_i_invited = loggedUser.getInvitedFriends();
         
       //Taking ALL USERS and taking out those who are friends or already invited.
@@ -355,9 +361,9 @@ public class MainController {
         all_users.removeAll(invited_user_friends);
         //I need to remove Admin from list
         
-        System.out.println("Current invited friends are " + invited_friends);
-        System.out.println("The people I have invited are: " + people_i_invited);
-        System.out.println("All friends are: " + friends);
+        LOGGER.debug("Current invited friends are " + invited_friends);
+        LOGGER.debug("The people I have invited are: " + people_i_invited);
+        LOGGER.debug("All friends are: " + friends);
         
         model.addAttribute("i_invited", people_i_invited);
         model.addAttribute("users", all_users);
@@ -369,13 +375,13 @@ public class MainController {
     
     @RequestMapping("/connect/{person_to_connect_id}")
     public String connectWith(@PathVariable("person_to_connect_id") Long id, Principal principal){
-    	System.out.println("In /connect post route");
+    	LOGGER.debug("In /connect post route");
     	String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
-    	System.out.println("Inside connect route and LOGGED USER IS: " + loggedUser);
+    	LOGGER.debug("Inside connect route and LOGGED USER IS: " + loggedUser);
     	User connect_to_person = uService.findOne(id);
-    	System.out.println("The person " + loggedUser.getName() + " is trying to connect with is " + uService.findOne(id).getName());
-    	System.out.println("The logged friends amount is: " + loggedUser.getUserFriends().size());
+    	LOGGER.debug("The person " + loggedUser.getName() + " is trying to connect with is " + uService.findOne(id).getName());
+    	LOGGER.debug("The logged friends amount is: " + loggedUser.getUserFriends().size());
     	
     	if(loggedUser.getUserFriends().size() == 0) {
     		List<User> list = new ArrayList<>();
@@ -400,13 +406,13 @@ public class MainController {
     }
     @RequestMapping("/invite/{person_to_connect_id}")
     public String inviteUser(@PathVariable("person_to_connect_id") Long id, Principal principal){
-    	System.out.println("In /INVITE route");
+    	LOGGER.debug("In /INVITE route");
     	String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
-    	System.out.println("Inside INVITE route and LOGGED USER IS: " + loggedUser);
+    	LOGGER.debug("Inside INVITE route and LOGGED USER IS: " + loggedUser);
     	User connect_to_person = uService.findOne(id);
-    	System.out.println("The person " + loggedUser.getName() + " is trying to connect with is " + uService.findOne(id).getName());
-    	System.out.println("The logged friends amount is: " + loggedUser.getUserFriends().size());
+    	LOGGER.debug("The person " + loggedUser.getName() + " is trying to connect with is " + uService.findOne(id).getName());
+    	LOGGER.debug("The logged friends amount is: " + loggedUser.getUserFriends().size());
     	
     	if(loggedUser.getInvitedFriends().size() == 0) {
     		List<User> list = new ArrayList<>();
@@ -424,13 +430,13 @@ public class MainController {
     // I may be able to consolidate this route into the other invite route
     @RequestMapping("/profile/invite/{person_to_connect_id}")
     public String profileInviteUser(@PathVariable("person_to_connect_id") Long id, Principal principal){
-    	System.out.println("In /INVITE route");
+    	LOGGER.debug("In /INVITE route");
     	String email = principal.getName();
         User loggedUser = uService.findByEmail(email);
-    	System.out.println("Inside INVITE route and LOGGED USER IS: " + loggedUser);
+    	LOGGER.debug("Inside INVITE route and LOGGED USER IS: " + loggedUser);
     	User connect_to_person = uService.findOne(id);
-    	System.out.println("The person " + loggedUser.getName() + " is trying to connect with is " + uService.findOne(id).getName());
-    	System.out.println("The logged friends amount is: " + loggedUser.getUserFriends().size());
+    	LOGGER.debug("The person " + loggedUser.getName() + " is trying to connect with is " + uService.findOne(id).getName());
+    	LOGGER.debug("The logged friends amount is: " + loggedUser.getUserFriends().size());
     	
     	if(loggedUser.getInvitedFriends().size() == 0) {
     		List<User> list = new ArrayList<>();
@@ -467,25 +473,25 @@ public class MainController {
     @PostMapping("/status/{user_to_render_id}")
     public String statusPostRoute(@PathVariable("user_to_render_id") Long user_to_render_id, @Valid @ModelAttribute("status") Status status, BindingResult result,  RedirectAttributes redirectAttribute, Principal principal) {
 		if(result.hasErrors()) {
-			System.out.println("DID NOT PASS STATUS VALIDATIONS: Status must be more than 2 characters");
+			LOGGER.debug("DID NOT PASS STATUS VALIDATIONS: Status must be more than 2 characters");
 			return "redirect:/";
 		} else {
 	    	String email = principal.getName();
 	        User loggedUser = uService.findByEmail(email);
 	        Long current_user_id = loggedUser.getId();
-			System.out.println("Passed status validations");
-	    	System.out.println("Trying to save status and logged user is: : " + loggedUser);
+			LOGGER.debug("Passed status validations");
+	    	LOGGER.debug("Trying to save status and logged user is: : " + loggedUser);
 	    	
 	    	//Getting and setting
 	    	List<Status> user_statuses = loggedUser.getStatuses();
 	    	status.setPoster(loggedUser);
 	    	status.setWall_id(user_to_render_id);
 	    	user_statuses.add(status);
-	    	System.out.println("The statuse_body: " + status.getStatus_body());
-	    	System.out.println("The statuses this user has is: " + user_statuses);
+	    	LOGGER.debug("The statuse_body: " + status.getStatus_body());
+	    	LOGGER.debug("The statuses this user has is: " + user_statuses);
 	    	loggedUser.setStatuses(user_statuses);
 	    	////
-	    	System.out.println("After setting statuses for loggedUser the loggedUser.getStatuses() is: " + loggedUser.getStatuses());
+	    	LOGGER.debug("After setting statuses for loggedUser the loggedUser.getStatuses() is: " + loggedUser.getStatuses());
 	    	sService.saveTheStatus(status);
 	    	//changing to string to work in URI
 	    	String string_user_to_render_id = user_to_render_id.toString();
@@ -497,7 +503,7 @@ public class MainController {
     @PostMapping("/delete/status/{status_id}/{user_to_render_id}")
     public String deleteStatus(@PathVariable("status_id") Long status_to_delete_id, @PathVariable("user_to_render_id") Long user_to_render_id) {
     	//First i will have to delete the replies, IF they exist.
-		System.out.println("Inside of status delete route");
+		LOGGER.debug("Inside of status delete route");
 
     	Status status_to_delete = sService.findOne(status_to_delete_id);
     	List<StatusReply> this_status_replies = status_to_delete.getRepliedStatusMessages();
@@ -506,7 +512,7 @@ public class MainController {
     	if(this_status_replies.size() > 0) {
         	//Iterating through and deleting the reply's
         	for(StatusReply this_status_reply : this_status_replies) {
-        		System.out.println("This status reply ID is: " + this_status_reply.id);
+        		LOGGER.debug("This status reply ID is: " + this_status_reply.id);
             	statusReplyService.delete(this_status_reply.id);
         	}
     	}
@@ -545,15 +551,15 @@ public class MainController {
     /////
 //    @PostMapping("/message")
 //    private String createMessage(@Valid @ModelAttribute("message") Message message, BindingResult result, @RequestParam("user_to_render_id") Long user_profile_id, Principal principal){
-//    	System.out.println("The user profile Id you submitted the message on is: " + user_profile_id);
-//    	System.out.println("The message is: " + message.getMessage_body());
+//    	LOGGER.debug("The user profile Id you submitted the message on is: " + user_profile_id);
+//    	LOGGER.debug("The message is: " + message.getMessage_body());
 //    	//Grabbing logged in User Object
 //    	String email = principal.getName();
 //        User loggedUser = uService.findByEmail(email);
 //        //
 //        //Getting loggedUser ID to run a query later
 //        Long loggedUserID = loggedUser.getId();
-//    	System.out.println("The Logged in User ID is: " + loggedUserID);
+//    	LOGGER.debug("The Logged in User ID is: " + loggedUserID);
 //    	
 //    	//Setting person who posted it
 //    	message.setMessagePoster(loggedUser);
@@ -585,7 +591,7 @@ public class MainController {
 //    	//This is the message object we are replying to
 //    	Message message_to_reply = mService.findOne(id);
 //    	//
-//    	System.out.println("The message to reply to is: " + mService.findOne(id));
+//    	LOGGER.debug("The message to reply to is: " + mService.findOne(id));
 //    	//Setting a reply for the message object
 //    	messageReply.setMessageReplyingTo(message_to_reply);
 //    	//Setting who replied (object) loggedUser
