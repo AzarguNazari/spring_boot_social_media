@@ -16,22 +16,19 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Email;
-
 
 
 @Entity
 @Table(name="users")
 @Data
-@Builder
 @NoArgsConstructor
 public class User {
-	
 	@Id
 	@GeneratedValue
 	private long id;

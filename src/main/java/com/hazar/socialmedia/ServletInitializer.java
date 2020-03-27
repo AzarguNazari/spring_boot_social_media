@@ -14,7 +14,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(JavaBeltTwoApplication.class);
+		return application.sources(SpringBootSocialMedia.class);
 	}
 
     private String TMP_FOLDER = "/tmp"; 

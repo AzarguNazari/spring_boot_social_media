@@ -1,21 +1,14 @@
 package com.hazar.socialmedia.models;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 
 @Entity
 @Table(name="roles")
 @Data
-@Builder
 @NoArgsConstructor
 public class Role {
 	@Id
