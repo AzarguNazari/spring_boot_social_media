@@ -1,0 +1,74 @@
+@startuml
+
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "user" as user {
+  *userid : number <<PK>>
+  --
+  *username : string
+  --
+  *email : string
+  --
+  *password : string
+  --
+  *about : text
+  --
+  *bdate: date
+}
+
+entity "post" {
+  *id : number <<PK>>
+  --
+  *text : text
+}
+
+entity "comment" {
+  *id : number <<PK>>
+  --
+  *text : string
+}
+
+entity "role" {
+  *id : number <<PK>>
+  --
+  *role : string
+}
+
+entity "roling" {
+    * role_id: number <<PK>>
+    --
+    * user_id: number <<PK>>
+}
+
+entity "commenting" {
+    *comment_id : number <<PK>>
+    --
+    *post_id: number <<PK>>
+}
+
+entity "posting" {
+    *user_id : number <<PK>>
+    --
+    *post_id : number <<PK>>
+}
+
+entity "friendship" {
+    * user_id1: number <<PK>>
+    --
+    * user_id2: number <<PK>>
+}
+
+user |o..o{ friendship
+user ||..o{ posting
+post ||..|{posting
+user ||..|{commenting
+comment ||..|{commenting
+user |o..|{roling
+role ||.|{roling
+
+@enduml
+
