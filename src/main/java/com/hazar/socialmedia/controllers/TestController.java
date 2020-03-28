@@ -25,7 +25,7 @@ import com.hazar.socialmedia.validators.UserValidator;
 @RequestMapping("/test")
 public class TestController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
 
 
     private final UserValidator uValidator;
