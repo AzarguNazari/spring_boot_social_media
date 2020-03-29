@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.facebook.example</groupId>
-    <artifactId>social-media-application</artifactId>
+    <artifactId>social-network-application</artifactId>
     <version>ALPHA</version>
     <name>Spring Boot Social Media</name>
     <description>Social Network app using spring boot</description>
