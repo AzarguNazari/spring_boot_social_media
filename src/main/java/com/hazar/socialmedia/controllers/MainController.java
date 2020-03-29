@@ -24,16 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.hazar.socialmedia.models.Message;
-import com.hazar.socialmedia.models.MessageReply;
 import com.hazar.socialmedia.models.Role;
-import com.hazar.socialmedia.models.Status;
-import com.hazar.socialmedia.models.StatusReply;
 import com.hazar.socialmedia.models.User;
-import com.hazar.socialmedia.services.MessageReplyService;
 import com.hazar.socialmedia.services.MessageService;
 import com.hazar.socialmedia.services.RoleService;
-import com.hazar.socialmedia.services.StatusReplyService;
-import com.hazar.socialmedia.services.StatusService;
 import com.hazar.socialmedia.services.UserService;
 import com.hazar.socialmedia.validators.UserValidator;
 

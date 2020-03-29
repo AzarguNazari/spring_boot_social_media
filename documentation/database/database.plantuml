@@ -7,9 +7,9 @@ hide circle
 skinparam linetype ortho
 
 entity "user" as user {
-  *userid : number <<PK>>
+  *id : number <<PK>>
   --
-  *username : string
+  *fullname : string
   --
   *email : string
   --
@@ -23,7 +23,9 @@ entity "user" as user {
 entity "post" {
   *id : number <<PK>>
   --
-  *text : text
+  *content : text
+  --
+  *creationDate : date
 }
 
 entity "comment" {

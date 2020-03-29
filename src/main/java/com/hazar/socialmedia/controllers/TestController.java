@@ -13,11 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.hazar.socialmedia.models.Message;
-import com.hazar.socialmedia.models.Status;
 import com.hazar.socialmedia.models.User;
-import com.hazar.socialmedia.services.MessageReplyService;
 import com.hazar.socialmedia.services.MessageService;
-import com.hazar.socialmedia.services.StatusService;
 import com.hazar.socialmedia.services.UserService;
 import com.hazar.socialmedia.validators.UserValidator;
 

@@ -1,10 +1,9 @@
 package com.hazar.socialmedia.repositories;
 
-import java.util.List;
-
+import com.hazar.socialmedia.models.Role;
 import org.springframework.data.repository.CrudRepository;
 
-import com.hazar.socialmedia.models.Role;
+import java.util.List;
 
 public interface RoleRepository extends CrudRepository<Role, Long>{
     List<Role> findAll();

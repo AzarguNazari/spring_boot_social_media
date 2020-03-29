@@ -1,34 +1,35 @@
 package com.hazar.socialmedia.services;
 
-import java.util.List;
-
+import com.hazar.socialmedia.interfaces.MessageServiceInterface;
 import com.hazar.socialmedia.models.Message;
 import com.hazar.socialmedia.repositories.MessageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
+
 @Service
-public class MessageService {
+public class MessageService implements MessageServiceInterface {
+
+	@Autowired
 	private MessageRepository messageRepository;
-	
-	public MessageService(MessageRepository messageRepository) {
-		this.messageRepository = messageRepository;
-	}
-	
-    public void saveMessage(Message message) {
-    	
+
+	public void saveMessage(Message message) {
     	messageRepository.save(message);
     }
-    public List<Message> findWallMessages(Long user_wall_id) {
-    	return messageRepository.findWallMessages(user_wall_id);
-    }
 
-	public Message findOne(Long message_id) {
-		// TODO Auto-generated method stub
-		return messageRepository.findById(message_id).get();
+	@Override
+	public void deleteMessage(Long messageID) {
+		messageRepository.deleteById(messageID);
 	}
 
-	public void remove(Message message_to_delete) {
-		// TODO Auto-generated method stub
-		messageRepository.delete(message_to_delete);
+	@Override
+	public Optional<Message> getMessage(Long messageID) {
+		return messageRepository.findById(messageID);
+	}
+
+	@Override
+	public List<Message> getMessages() {
+		return messageRepository.findAll();
 	}
 }

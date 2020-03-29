@@ -15,29 +15,22 @@ import java.util.List;
 public class Message {
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;
 	
 	@Size(min=2, message="Message must be more than 2 characters.")
 	private String message_body;
-	
+
 	private long user_wall_id;
-	
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User messagePoster;
-	
-    @OneToMany(mappedBy="messageReplyingTo", fetch = FetchType.LAZY)
-    private List<MessageReply> repliedMessageMessages;
     
 	private Date createdAt;
 	
 	private Date updatedAt;
 
-
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
 	@PrePersist
     protected void onCreate(){
         this.createdAt = new Date();
