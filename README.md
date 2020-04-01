@@ -1,8 +1,3 @@
-# Social-Network
-Full stack Social Network app
+# Social Network Application
 
-Java Spring Boot
-
-mySQL database
-
-Bootstrap 4
+(something)[documentation/database.plantuml]
